@@ -3,7 +3,7 @@ import {
   CommandInteraction,
   Message,
   ShardingManagerOptions
-} from 'discord.js'
+} from 'discord.js';
 
 export type LevelType =
   | 'fatal'
@@ -12,45 +12,50 @@ export type LevelType =
   | 'info'
   | 'verbose'
   | 'debug'
-  | 'chat'
+  | 'chat';
 
-export type EmbedType = 'default' | 'error' | 'success' | 'warn' | 'info'
+export type EmbedType = 'default' | 'error' | 'success' | 'warn' | 'info';
 
 export interface ErrorReportOptions {
-  executer: Message | CommandInteraction | undefined
-  isSend?: boolean
+  executer: Message | CommandInteraction | undefined;
+  isSend?: boolean;
 }
 
 export interface IConfig {
-  BUILD_VERSION: string
-  BUILD_NUMBER: string | null
-  githubToken?: string
+  BUILD_VERSION: string;
+  BUILD_NUMBER: string | null;
+  githubToken?: string;
+  supportURL: string;
+  IOChannels: {
+    production: string[];
+    development: string[];
+  };
   bot: {
-    sharding: boolean
-    shardingOptions?: ShardingManagerOptions
-    options: ClientOptions
-    token: string
-    owners: string[]
-    prefix: string
-    cooldown?: number
-  }
+    sharding: boolean;
+    shardingOptions?: ShardingManagerOptions;
+    options: ClientOptions;
+    token: string;
+    owners: string[];
+    prefix: string;
+    cooldown?: number;
+  };
   report: {
-    type: 'webhook' | 'text'
+    type: 'webhook' | 'text';
     webhook: {
-      url: string
-    }
+      url: string;
+    };
     text: {
-      guildID: string
-      channelID: string
-    }
-  }
+      guildID: string;
+      channelID: string;
+    };
+  };
   database: {
-    type: 'mongodb' | 'sqlite'
-    url: string
-    options: any
-  }
+    type: 'mongodb' | 'sqlite';
+    url: string;
+    options: any;
+  };
   logger: {
-    level: LevelType
-    dev: boolean
-  }
+    level: LevelType;
+    dev: boolean;
+  };
 }

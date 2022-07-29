@@ -1,15 +1,22 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import {
+  ChatInputCommandInteraction,
+  ContextMenuCommandInteraction
+} from 'discord.js';
 import {
   MessageCommandFuntion,
   MessageCommandOptions,
-  SlashCommandFunction,
-  SlashCommandOptions
-} from '../../typings/structures'
+  SlashCommandData,
+  BaseInteractionFunction,
+  SlashCommandOptions,
+  ContextMenu as IContextMenu
+} from '../../typings/structures';
 
 export class SlashCommand {
   constructor(
-    public data: SlashCommandBuilder,
-    public execute: SlashCommandFunction,
+    public data: SlashCommandData,
+    public execute: BaseInteractionFunction<
+      ChatInputCommandInteraction<'cached'>
+    >,
     public options?: SlashCommandOptions
   ) {}
 }
@@ -27,6 +34,15 @@ export class BaseCommand extends MessageCommand {
     public execute: MessageCommandFuntion,
     public slash?: SlashCommand | undefined
   ) {
-    super(data, execute)
+    super(data, execute);
   }
+}
+
+export class ContextMenu implements IContextMenu {
+  constructor(
+    public data: SlashCommandData,
+    public execute: BaseInteractionFunction<
+      ContextMenuCommandInteraction<'cached'>
+    >
+  ) {}
 }
