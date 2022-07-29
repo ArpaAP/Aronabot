@@ -10,7 +10,7 @@ let schema = new mongoose_1.Schema({
         name: {
             type: String,
             required: true
-        },
+        }
     }
 });
 exports.default = (0, mongoose_1.model)('user', schema, 'user');

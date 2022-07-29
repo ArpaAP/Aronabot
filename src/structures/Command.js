@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseCommand = exports.MessageCommand = exports.SlashCommand = void 0;
+exports.ContextMenu = exports.BaseCommand = exports.MessageCommand = exports.SlashCommand = void 0;
 class SlashCommand {
     data;
     execute;
@@ -33,3 +33,12 @@ class BaseCommand extends MessageCommand {
     }
 }
 exports.BaseCommand = BaseCommand;
+class ContextMenu {
+    data;
+    execute;
+    constructor(data, execute) {
+        this.data = data;
+        this.execute = execute;
+    }
+}
+exports.ContextMenu = ContextMenu;

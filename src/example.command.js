@@ -10,16 +10,11 @@ exports.default = {
     description: '',
     aliases: [],
     isSlash: false,
-    async execute(client, message, args) {
-    },
+    async execute(client, message, args) { },
     slash: {
         name: '',
-        data: new builders_1.SlashCommandBuilder()
-            .setName('')
-            .setDescription('')
-            .toJSON(),
-        async execute(client, interaction) {
-        }
+        data: new builders_1.SlashCommandBuilder().setName('').setDescription('').toJSON(),
+        async execute(client, interaction) { }
     }
 };
 exports.default = {
@@ -27,17 +22,12 @@ exports.default = {
     description: '',
     aliases: [],
     isSlash: false,
-    async execute(client, message, args) {
-    },
+    async execute(client, message, args) { }
 };
 exports.default = {
     name: '',
     description: '',
     isSlash: true,
-    data: new builders_1.SlashCommandBuilder()
-        .setName('')
-        .setDescription('')
-        .toJSON(),
-    async execute(client, interaction) {
-    }
+    data: new builders_1.SlashCommandBuilder().setName('').setDescription('').toJSON(),
+    async execute(client, interaction) { }
 };
