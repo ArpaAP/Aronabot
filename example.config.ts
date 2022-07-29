@@ -1,26 +1,31 @@
-import { IConfig } from './typings'
-import fs from 'fs'
+import { IConfig } from './typings';
+import fs from 'fs';
 
-let BUILD_NUMBER: string | null = fs.readFileSync('.git/HEAD').toString().trim()
+let BUILD_NUMBER: string | null = fs
+  .readFileSync('.git/HEAD')
+  .toString()
+  .trim();
 
 if (BUILD_NUMBER?.indexOf(':') === -1) {
-  BUILD_NUMBER
+  BUILD_NUMBER;
 } else {
   try {
     BUILD_NUMBER = fs
       .readFileSync('.git/' + BUILD_NUMBER?.substring(5))
       .toString()
       .trim()
-      .substring(0, 7)
+      .substring(0, 7);
   } catch (e) {
-    BUILD_NUMBER = null
+    BUILD_NUMBER = null;
   }
 }
 
 const config: IConfig = {
   BUILD_NUMBER,
-  BUILD_VERSION: '0.0.3',
+  BUILD_VERSION: '1.0.0',
   githubToken: '',
+  supportURL: '',
+  IOChannels: { production: [''], development: [''] },
   bot: {
     sharding: false,
     options: {
@@ -29,7 +34,7 @@ const config: IConfig = {
     },
     token: '',
     owners: [],
-    prefix: '!',
+    prefix: '??',
     cooldown: 2000
   },
   report: {
@@ -60,6 +65,6 @@ const config: IConfig = {
     level: 'chat',
     dev: false
   }
-}
+};
 
-export default config
+export default config;
