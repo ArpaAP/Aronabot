@@ -19,7 +19,7 @@ export interface Command extends MessageCommnad {
 
 export interface SlashCommand {
   data: SlashCommandData;
-  execute: BaseInteractionFunction<ChatInputCommandInteraction<'cached'>>;
+  execute: BaseInteractionFunction<ChatInputCommandInteraction>;
   options?: SlashCommandOptions;
   slash?: SlashCommand;
 }
