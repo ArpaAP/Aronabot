@@ -11,6 +11,7 @@ export interface Student {
   birth: string;
   hobby?: string;
   illustrator?: string;
+  avatar?: string;
   voiceActor?: string;
 }
 

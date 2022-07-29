@@ -38,7 +38,7 @@ export default new BaseCommand(
         name: '소속',
         value: organization?.name ?? '(없음)'
       })
-      .setThumbnail('../../assets/students/shiroko.png');
+      .setThumbnail(student.avatar ?? undefined);
 
     message.reply({ embeds: [embed] });
   },
