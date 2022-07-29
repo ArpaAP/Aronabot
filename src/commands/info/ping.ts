@@ -1,7 +1,7 @@
-import { BaseCommand } from '../../structures/Command'
-import Discord from 'discord.js'
-import Embed from '../../utils/Embed'
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { BaseCommand } from '../../structures/Command';
+import Discord from 'discord.js';
+import Embed from '../../utils/Embed';
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 export default new BaseCommand(
   {
@@ -10,11 +10,11 @@ export default new BaseCommand(
     aliases: ['핑', '측정', 'vld']
   },
   async (client, message, args) => {
-    let embed = new Embed(client, 'warn').setTitle('핑 측정중...')
+    let embed = new Embed(client, 'warn').setTitle('핑 측정중...');
 
     let m = await message.reply({
       embeds: [embed]
-    })
+    });
     embed = new Embed(client, 'success').setTitle('PONG!').addFields([
       {
         name: '메세지 응답속도',
@@ -31,16 +31,17 @@ export default new BaseCommand(
         value: `<t:${(Number(client.readyAt) / 1000) | 0}:R>`,
         inline: true
       }
-    ])
+    ]);
 
     m.edit({
       embeds: [embed]
-    })
+    });
   },
   {
     data: new SlashCommandBuilder()
       .setName('ping')
-      .setDescription('핑을 측정합니다.'),
+      .setDescription('핑을 측정합니다.')
+      .toJSON(),
     options: {
       name: 'ping',
       isSlash: true
@@ -50,10 +51,10 @@ export default new BaseCommand(
         .setTitle('핑 측정')
         .addFields([
           {
-        name: '메세지 응답속도',
-        value: `${Number(Date.now()) - Number(interaction.createdAt)}ms`,
-        inline: true
-      },
+            name: '메세지 응답속도',
+            value: `${Number(Date.now()) - Number(interaction.createdAt)}ms`,
+            inline: true
+          },
           {
             name: 'API 반응속도',
             value: `${client.ws.ping}ms`,
@@ -64,8 +65,8 @@ export default new BaseCommand(
             value: `<t:${(Number(client.readyAt) / 1000) | 0}:R>`,
             inline: true
           }
-        ])
-      interaction.reply({ embeds: [PingEmbed] })
+        ]);
+      interaction.reply({ embeds: [PingEmbed] });
     }
   }
-)
+);
