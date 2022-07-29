@@ -10,6 +10,7 @@ const CommandManager_1 = __importDefault(require("../managers/CommandManager"));
 const EventManager_1 = __importDefault(require("../managers/EventManager"));
 const ErrorManager_1 = __importDefault(require("../managers/ErrorManager"));
 const DatabaseManager_1 = __importDefault(require("../managers/DatabaseManager"));
+const mongoose_1 = require("mongoose");
 const dotenv_1 = require("dotenv");
 const logger = new Logger_1.default('bot');
 class BotClient extends discord_js_1.Client {
@@ -19,7 +20,7 @@ class BotClient extends discord_js_1.Client {
     commands = new discord_js_1.Collection();
     events = new discord_js_1.Collection();
     errors = new discord_js_1.Collection();
-    db;
+    db = new mongoose_1.Connection();
     schemas = new discord_js_1.Collection();
     command = new CommandManager_1.default(this);
     event = new EventManager_1.default(this);

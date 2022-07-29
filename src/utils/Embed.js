@@ -20,9 +20,9 @@ class Embed extends discord_js_1.EmbedBuilder {
         else if (type === 'warn')
             this.setColor('#FEE75C');
         else if (type === 'info')
-            this.setColor('#5865F2');
+            this.setColor('#007FFF');
         else if (type === 'default')
-            this.setColor('#5865F2');
+            this.setColor('#007FFF');
     }
     setType(type) {
         if (type === 'success')
@@ -32,9 +32,9 @@ class Embed extends discord_js_1.EmbedBuilder {
         else if (type === 'warn')
             this.setColor('#FEE75C');
         else if (type === 'info')
-            this.setColor('#5865F2');
+            this.setColor('#007FFF');
         else if (type === 'default')
-            this.setColor('#5865F2');
+            this.setColor('#007FFF');
     }
 }
 exports.default = Embed;
