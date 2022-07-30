@@ -11,6 +11,28 @@ exports.StudentSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    code: {
+        type: String,
+        required: true
+    },
+    stars: {
+        type: Number,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    ments: {
+        pickup: {
+            type: String,
+            required: true
+        }
+    },
     belong: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Organization'
@@ -37,6 +59,68 @@ exports.StudentSchema = new mongoose_1.Schema({
     },
     hobby: {
         type: String
+    },
+    defaultStats: {
+        health: {
+            type: Number,
+            required: true
+        },
+        attack: {
+            type: Number,
+            required: true
+        },
+        defense: {
+            type: Number,
+            required: true
+        },
+        healing: {
+            type: Number,
+            required: true
+        },
+        hit: {
+            type: Number,
+            required: true
+        },
+        dodge: {
+            type: Number,
+            required: true
+        },
+        critical: {
+            type: Number,
+            required: true
+        },
+        criticalResistance: {
+            type: Number,
+            required: true
+        },
+        criticalDamage: {
+            type: Number,
+            required: true
+        },
+        criticalDamageResistance: {
+            type: Number,
+            required: true
+        },
+        stability: {
+            type: Number,
+            required: true
+        },
+        range: {
+            type: Number,
+            required: true
+        },
+        crowdControlEnhancement: {
+            type: Number,
+            required: true
+        },
+        crowdControlResistance: {
+            type: Number,
+            required: true
+        },
+        recoveryEffectEnhancement: {
+            type: Number,
+            required: true
+        }
     },
     illustrator: {
         type: String
