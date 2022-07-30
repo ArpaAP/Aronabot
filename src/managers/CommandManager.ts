@@ -170,8 +170,8 @@ export default class CommandManager extends BaseManager {
             `Successfully registered server ${guildID} server commands.`
           )
         );
-
-      return slashCommands;
     }
+
+    return slashCommands;
   }
 }

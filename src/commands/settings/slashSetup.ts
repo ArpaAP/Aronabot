@@ -9,6 +9,7 @@ import CommandManager from '../../managers/CommandManager';
 import Embed from '../../utils/Embed';
 import ErrorManager from '../../managers/ErrorManager';
 import { BaseCommand } from '../../structures/Command';
+import config from '../../../config';
 
 export default new BaseCommand(
   {
@@ -18,6 +19,12 @@ export default new BaseCommand(
   async (client, message, args) => {
     let commandManager = new CommandManager(client);
     let errorManager = new ErrorManager(client);
+
+    let isGlobal = args[0] === '글로벌';
+
+    if (isGlobal && !config.bot.owners.includes(message.author.id)) {
+      return message.reply('글로벌 세팅은 봇 개발자만 가능해요!');
+    }
 
     let row =
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
@@ -49,7 +56,9 @@ export default new BaseCommand(
         await i.update({ embeds: [loading], components: [] });
 
         commandManager
-          .slashCommandSetup(message.guild?.id as string)
+          .slashCommandSetup(
+            isGlobal ? undefined : (message.guild?.id as string)
+          )
           .then((data) => {
             m.delete();
             message.channel.send({
@@ -57,7 +66,9 @@ export default new BaseCommand(
                 new Embed(client, 'success')
                   .setTitle('로딩완료!')
                   .setDescription(
-                    `${data?.length}개의 (/) 명령어를 생성했어요!`
+                    `${data?.length}개의${
+                      isGlobal ? ' 글로벌' : ''
+                    } (/) 명령어를 생성했어요!`
                   )
               ]
             });
