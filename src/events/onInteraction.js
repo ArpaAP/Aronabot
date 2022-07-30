@@ -96,7 +96,7 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
             if (key === 'introduction') {
                 embed = new Embed_1.default(client, 'default')
                     .setTitle(`\`${student.name}\`의 소개에요!`)
-                    .setDescription(`**"${student.ments.pickup}"**\n\n>>> ${student.description}`)
+                    .setDescription(`**"${student.ments.intro}"**\n\n>>> ${student.description}`)
                     .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png`);
             }
             if (key === 'stats') {

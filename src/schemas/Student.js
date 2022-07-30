@@ -28,7 +28,7 @@ exports.StudentSchema = new mongoose_1.Schema({
         required: true
     },
     ments: {
-        pickup: {
+        intro: {
             type: String,
             required: true
         }
