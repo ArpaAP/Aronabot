@@ -9,7 +9,7 @@ import { ActionRowBuilder, SelectMenuBuilder } from 'discord.js';
 export default new BaseCommand(
   {
     name: '학생',
-    description: '학생 정보를 불러와요!',
+    description: '학생 정보를 보여줘요!',
     aliases: ['스튜던트', '가쿠세이', '学生', 'gakusei', 'student']
   },
   async (client, message, args) => {

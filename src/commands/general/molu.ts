@@ -1,5 +1,6 @@
 import { BaseCommand } from '../../structures/Command';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { EmbedBuilder } from 'discord.js';
 
 export default new BaseCommand(
   {
@@ -8,9 +9,15 @@ export default new BaseCommand(
     aliases: ['몰루', '몰?루', '루몰', '몰!루']
   },
   async (client, message, args) => {
-    message.reply(
-      'https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/molu.gif'
-    );
+    message.reply({
+      embeds: [
+        new EmbedBuilder({
+          image: {
+            url: 'https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/molu-128.gif'
+          }
+        })
+      ]
+    });
   },
   {
     data: new SlashCommandBuilder()
@@ -22,9 +29,15 @@ export default new BaseCommand(
       isSlash: true
     },
     async execute(client, interaction) {
-      interaction.reply(
-        'https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/molu.gif'
-      );
+      interaction.reply({
+        embeds: [
+          new EmbedBuilder({
+            image: {
+              url: 'https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/molu-128.gif'
+            }
+          })
+        ]
+      });
     }
   }
 );
