@@ -12,7 +12,7 @@ import { Organization } from '../schemas/Organization';
 import StudentModel from '../schemas/Student';
 import { Event } from '../structures/Event';
 import Embed from '../utils/Embed';
-import numberWithCommas from '../utils/numberWithCommas';
+import numberWithCommas from '../utils/NumberWithCommas';
 
 export default new Event('interactionCreate', async (client, interaction) => {
   const commandManager = new CommandManager(client);
