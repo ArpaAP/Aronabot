@@ -125,8 +125,8 @@ class CommandManager extends BaseManager_1.default {
                 body: slashCommands
             })
                 .then(() => this.logger.info(`Successfully registered server ${guildID} server commands.`));
-            return slashCommands;
         }
+        return slashCommands;
     }
 }
 exports.default = CommandManager;

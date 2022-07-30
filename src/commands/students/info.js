@@ -130,7 +130,7 @@ exports.default = new Command_1.BaseCommand({
 }, {
     data: new builders_1.SlashCommandBuilder()
         .setName('학생')
-        .setDescription('학생 정보를 확인합니다.')
+        .setDescription('학생 정보를 보여줘요!')
         .addStringOption((option) => option.setName('이름').setDescription('학생의 이름').setRequired(true))
         .toJSON(),
     options: {

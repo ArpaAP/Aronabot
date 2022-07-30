@@ -8,12 +8,17 @@ const CommandManager_1 = __importDefault(require("../../managers/CommandManager"
 const Embed_1 = __importDefault(require("../../utils/Embed"));
 const ErrorManager_1 = __importDefault(require("../../managers/ErrorManager"));
 const Command_1 = require("../../structures/Command");
+const config_1 = __importDefault(require("../../../config"));
 exports.default = new Command_1.BaseCommand({
     name: 'slashSetup',
     aliases: ['slash', 'setup', 'tpxld', '세팅']
 }, async (client, message, args) => {
     let commandManager = new CommandManager_1.default(client);
     let errorManager = new ErrorManager_1.default(client);
+    let isGlobal = args[0] === '글로벌';
+    if (isGlobal && !config_1.default.bot.owners.includes(message.author.id)) {
+        return message.reply('글로벌 세팅은 봇 개발자만 가능해요!');
+    }
     let row = new discord_js_1.ActionRowBuilder().addComponents([
         new discord_js_1.ButtonBuilder()
             .setCustomId('accept')
@@ -36,14 +41,14 @@ exports.default = new Command_1.BaseCommand({
             });
             await i.update({ embeds: [loading], components: [] });
             commandManager
-                .slashCommandSetup(message.guild?.id)
+                .slashCommandSetup(isGlobal ? undefined : message.guild?.id)
                 .then((data) => {
                 m.delete();
                 message.channel.send({
                     embeds: [
                         new Embed_1.default(client, 'success')
                             .setTitle('로딩완료!')
-                            .setDescription(`${data?.length}개의 (/) 명령어를 생성했어요!`)
+                            .setDescription(`${data?.length}개의${isGlobal ? ' 글로벌' : ''} (/) 명령어를 생성했어요!`)
                     ]
                 });
             })

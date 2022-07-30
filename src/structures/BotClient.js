@@ -26,6 +26,7 @@ class BotClient extends discord_js_1.Client {
     event = new EventManager_1.default(this);
     error = new ErrorManager_1.default(this);
     database = new DatabaseManager_1.default(this);
+    presenceIndex = 0;
     constructor(options) {
         super(options);
         (0, dotenv_1.config)();
@@ -35,24 +36,40 @@ class BotClient extends discord_js_1.Client {
     }
     async start(token = config_1.default.bot.token) {
         logger.info('Logging in bot...');
-        await this.login(token).then(() => this.setStatus());
+        await this.login(token);
+        await this.setStatus();
+        setInterval(async () => {
+            await this.setStatus();
+            this.presenceIndex++;
+        }, 12000);
     }
     async setStatus(status = 'online', name = '점검중...') {
         if (status.includes('dev')) {
             logger.warn('Changed status to Developent mode');
             this.user?.setPresence({
                 activities: [
-                    { name: `${this.config.bot.prefix}help | ${this.VERSION} : ${name}` }
+                    { name: `${this.config.bot.prefix}도움 | ${this.VERSION} : ${name}` }
                 ],
                 status: 'dnd'
             });
         }
         else if (status.includes('online')) {
             logger.info('Changed status to Online mode');
+            let presence;
+            if (this.presenceIndex % 4 === 0) {
+                presence = `${this.config.bot.prefix}도움을 입력해보세요!`;
+            }
+            if (this.presenceIndex % 4 === 1) {
+                presence = `${this.config.bot.prefix}도움 | ${this.VERSION}`;
+            }
+            if (this.presenceIndex % 4 === 2) {
+                presence = `${this.config.bot.prefix}도움 | ${this.guilds.cache.size} 서버`;
+            }
+            if (this.presenceIndex % 4 === 3) {
+                presence = `${this.config.bot.prefix}도움 | ${this.users.cache.size} 사용자`;
+            }
             this.user?.setPresence({
-                activities: [
-                    { name: `${this.config.bot.prefix}help | ${this.VERSION}` }
-                ],
+                activities: [{ name: presence }],
                 status: 'online'
             });
         }
