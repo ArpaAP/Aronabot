@@ -108,7 +108,7 @@ export default new Event('interactionCreate', async (client, interaction) => {
         embed = new Embed(client, 'default')
           .setTitle(`\`${student.name}\`의 소개에요!`)
           .setDescription(
-            `**"${student.ments.pickup}"**\n\n>>> ${student.description}`
+            `**"${student.ments.intro}"**\n\n>>> ${student.description}`
           )
           .setThumbnail(
             `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png`

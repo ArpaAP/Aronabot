@@ -8,7 +8,7 @@ export interface Student {
   type: string;
   description: string;
   ments: {
-    pickup: string;
+    intro: string;
   };
   belong?: ObjectId;
   club?: ObjectId;
@@ -65,7 +65,7 @@ export const StudentSchema = new Schema<Student>(
       required: true
     },
     ments: {
-      pickup: {
+      intro: {
         type: String,
         required: true
       }
