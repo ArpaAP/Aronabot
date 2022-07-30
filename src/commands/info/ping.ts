@@ -39,8 +39,8 @@ export default new BaseCommand(
   },
   {
     data: new SlashCommandBuilder()
-      .setName('ping')
-      .setDescription('핑을 측정합니다.')
+      .setName('핑')
+      .setDescription('봇의 핑을 측정해요!')
       .toJSON(),
     options: {
       name: 'ping',
