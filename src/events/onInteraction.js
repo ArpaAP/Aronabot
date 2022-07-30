@@ -135,34 +135,38 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
             await interaction.message.edit({
                 embeds: embed ? [embed] : undefined,
                 components: [
-                    new discord_js_1.ActionRowBuilder({
-                        components: [
-                            new discord_js_1.ButtonBuilder({
-                                customId: 'student-info-stats-select-level',
-                                label: '레벨 선택',
-                                emoji: '📈',
-                                style: discord_js_1.ButtonStyle.Primary
-                            }),
-                            new discord_js_1.ButtonBuilder({
-                                customId: 'student-info-stats-select-destiny-level',
-                                label: '인연 레벨 선택',
-                                emoji: '🤍',
-                                style: discord_js_1.ButtonStyle.Danger
-                            }),
-                            new discord_js_1.ButtonBuilder({
-                                customId: 'student-info-stats-select-skill-setting',
-                                label: '스킬 설정',
-                                emoji: '📝',
-                                style: discord_js_1.ButtonStyle.Success
-                            }),
-                            new discord_js_1.ButtonBuilder({
-                                customId: 'student-info-stats-select-weapon-setting',
-                                label: '장비 선택',
-                                emoji: '🛡',
-                                style: discord_js_1.ButtonStyle.Secondary
+                    ...(key === 'stats'
+                        ? [
+                            new discord_js_1.ActionRowBuilder({
+                                components: [
+                                    new discord_js_1.ButtonBuilder({
+                                        customId: 'student-info-stats-select-level',
+                                        label: '레벨 선택',
+                                        emoji: '📈',
+                                        style: discord_js_1.ButtonStyle.Primary
+                                    }),
+                                    new discord_js_1.ButtonBuilder({
+                                        customId: 'student-info-stats-select-destiny-level',
+                                        label: '인연 레벨 선택',
+                                        emoji: '🤍',
+                                        style: discord_js_1.ButtonStyle.Danger
+                                    }),
+                                    new discord_js_1.ButtonBuilder({
+                                        customId: 'student-info-stats-select-skill-setting',
+                                        label: '스킬 설정',
+                                        emoji: '📝',
+                                        style: discord_js_1.ButtonStyle.Success
+                                    }),
+                                    new discord_js_1.ButtonBuilder({
+                                        customId: 'student-info-stats-select-weapon-setting',
+                                        label: '장비 선택',
+                                        emoji: '🛡',
+                                        style: discord_js_1.ButtonStyle.Secondary
+                                    })
+                                ]
                             })
                         ]
-                    }),
+                        : []),
                     new discord_js_1.ActionRowBuilder({
                         components: [
                             new discord_js_1.SelectMenuBuilder({
