@@ -181,34 +181,38 @@ export default new Event('interactionCreate', async (client, interaction) => {
       await interaction.message.edit({
         embeds: embed ? [embed] : undefined,
         components: [
-          new ActionRowBuilder<ButtonBuilder>({
-            components: [
-              new ButtonBuilder({
-                customId: 'student-info-stats-select-level',
-                label: '레벨 선택',
-                emoji: '📈',
-                style: ButtonStyle.Primary
-              }),
-              new ButtonBuilder({
-                customId: 'student-info-stats-select-destiny-level',
-                label: '인연 레벨 선택',
-                emoji: '🤍',
-                style: ButtonStyle.Danger
-              }),
-              new ButtonBuilder({
-                customId: 'student-info-stats-select-skill-setting',
-                label: '스킬 설정',
-                emoji: '📝',
-                style: ButtonStyle.Success
-              }),
-              new ButtonBuilder({
-                customId: 'student-info-stats-select-weapon-setting',
-                label: '장비 선택',
-                emoji: '🛡',
-                style: ButtonStyle.Secondary
-              })
-            ]
-          }),
+          ...(key === 'stats'
+            ? [
+                new ActionRowBuilder<ButtonBuilder>({
+                  components: [
+                    new ButtonBuilder({
+                      customId: 'student-info-stats-select-level',
+                      label: '레벨 선택',
+                      emoji: '📈',
+                      style: ButtonStyle.Primary
+                    }),
+                    new ButtonBuilder({
+                      customId: 'student-info-stats-select-destiny-level',
+                      label: '인연 레벨 선택',
+                      emoji: '🤍',
+                      style: ButtonStyle.Danger
+                    }),
+                    new ButtonBuilder({
+                      customId: 'student-info-stats-select-skill-setting',
+                      label: '스킬 설정',
+                      emoji: '📝',
+                      style: ButtonStyle.Success
+                    }),
+                    new ButtonBuilder({
+                      customId: 'student-info-stats-select-weapon-setting',
+                      label: '장비 선택',
+                      emoji: '🛡',
+                      style: ButtonStyle.Secondary
+                    })
+                  ]
+                })
+              ]
+            : []),
           new ActionRowBuilder<SelectMenuBuilder>({
             components: [
               new SelectMenuBuilder({
