@@ -38,9 +38,6 @@ exports.default = new Command_1.BaseCommand({
     data: new discord_js_1.SlashCommandBuilder()
         .setName('도움말')
         .setDescription('도움말을 보여줍니다.')
-        .addBooleanOption((options) => options
-        .setDescription('true 로 바꿀시 명령어 리스트를 디엠으로 보냅니다.')
-        .setName('디엠'))
         .toJSON(),
     async execute(client, interaction) {
         const embed = new Embed_1.default(client, 'default')
@@ -55,28 +52,7 @@ exports.default = new Command_1.BaseCommand({
             value: `\`?몰루\`: 몰?루 움짤을 보내요!`,
             inline: true
         });
-        const dmEmbed = new Embed_1.default(client, 'success').setTitle('도움말을 전송했습니다!');
-        if (interaction.options.getBoolean('디엠')) {
-            try {
-                interaction.user.send({
-                    embeds: [embed]
-                });
-                return await interaction.reply({
-                    embeds: [dmEmbed]
-                });
-            }
-            catch (error) {
-                dmEmbed
-                    .setTitle('명령어 리스트를 정상적으로 DM으로 전달하지 못했어요!')
-                    .setDescription('DM 전송을 활성화해주세요!')
-                    .setType('error');
-                return await interaction.reply({
-                    embeds: [dmEmbed],
-                    ephemeral: true
-                });
-            }
-        }
-        return await interaction.reply({
+        interaction.reply({
             embeds: [embed],
             ephemeral: true
         });

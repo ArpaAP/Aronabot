@@ -54,7 +54,6 @@ class BotClient extends discord_js_1.Client {
             });
         }
         else if (status.includes('online')) {
-            logger.info('Changed status to Online mode');
             let presence;
             if (this.presenceIndex % 4 === 0) {
                 presence = `${this.config.bot.prefix}도움을 입력해보세요!`;

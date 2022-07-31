@@ -122,6 +122,100 @@ exports.StudentSchema = new mongoose_1.Schema({
             required: true
         }
     },
+    compatibility: {
+        primaryType: {
+            type: String,
+            required: true
+        },
+        position: {
+            type: String,
+            required: true
+        },
+        attackType: {
+            type: String,
+            required: true
+        },
+        defenseType: {
+            type: String,
+            required: true
+        },
+        terrains: {
+            street: {
+                type: String,
+                required: true
+            },
+            outdoor: {
+                type: String,
+                required: true
+            },
+            indoor: {
+                type: String,
+                required: true
+            }
+        }
+    },
+    skills: {
+        ex: {
+            name: {
+                type: String,
+                required: true
+            },
+            cost: {
+                type: Number,
+                required: true
+            },
+            description: {
+                type: String,
+                required: true
+            },
+            variables: {
+                type: mongoose_1.Schema.Types.Mixed,
+                required: true
+            }
+        },
+        primary: {
+            name: {
+                type: String,
+                required: true
+            },
+            description: {
+                type: String,
+                required: true
+            },
+            variables: {
+                type: mongoose_1.Schema.Types.Mixed,
+                required: true
+            }
+        },
+        reinforce: {
+            name: {
+                type: String,
+                required: true
+            },
+            description: {
+                type: String,
+                required: true
+            },
+            variables: {
+                type: mongoose_1.Schema.Types.Mixed,
+                required: true
+            }
+        },
+        sub: {
+            name: {
+                type: String,
+                required: true
+            },
+            description: {
+                type: String,
+                required: true
+            },
+            variables: {
+                type: mongoose_1.Schema.Types.Mixed,
+                required: true
+            }
+        }
+    },
     illustrator: {
         type: String
     },
