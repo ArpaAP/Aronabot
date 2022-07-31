@@ -64,8 +64,6 @@ export default class BotClient extends Client {
         status: 'dnd'
       });
     } else if (status.includes('online')) {
-      logger.info('Changed status to Online mode');
-
       let presence;
 
       if (this.presenceIndex % 4 === 0) {

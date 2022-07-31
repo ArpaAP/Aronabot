@@ -113,13 +113,13 @@ export default new BaseCommand(
                 },
                 {
                   label: '상성 정보',
-                  value: `${student.id}:fit`,
+                  value: `${student.id}:compatibility`,
                   description: '학생의 상성 정보를 보여줍니다.',
                   emoji: '✨'
                 },
                 {
                   label: '스킬',
-                  value: `${student.id}:skill`,
+                  value: `${student.id}:skills`,
                   description: '학생의 스킬을 보여줍니다.',
                   emoji: '📚'
                 },
@@ -245,13 +245,13 @@ export default new BaseCommand(
                   },
                   {
                     label: '상성 정보',
-                    value: `${student.id}:fit`,
+                    value: `${student.id}:compatibility`,
                     description: '학생의 상성 정보를 보여줍니다.',
                     emoji: '✨'
                   },
                   {
                     label: '스킬',
-                    value: `${student.id}:skill`,
+                    value: `${student.id}:skills`,
                     description: '학생의 스킬을 보여줍니다.',
                     emoji: '📚'
                   },

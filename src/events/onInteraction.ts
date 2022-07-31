@@ -12,7 +12,9 @@ import { Organization } from '../schemas/Organization';
 import StudentModel from '../schemas/Student';
 import { Event } from '../structures/Event';
 import Embed from '../utils/Embed';
+import getEmoji from '../utils/GetEmoji';
 import numberWithCommas from '../utils/NumberWithCommas';
+import skillDescriptionFormat from '../utils/SkillFormatter';
 
 export default new Event('interactionCreate', async (client, interaction) => {
   const commandManager = new CommandManager(client);
@@ -177,6 +179,134 @@ export default new Event('interactionCreate', async (client, interaction) => {
           });
       }
 
+      if (key === 'compatibility') {
+        const { compatibility } = student;
+        const { primaryType, attackType, defenseType, terrains } =
+          compatibility;
+
+        let primaryTypeStr;
+        switch (primaryType) {
+          case 'TANK':
+            primaryTypeStr = '탱커';
+            break;
+          case 'DEAL':
+            primaryTypeStr = '딜러';
+            break;
+          case 'HEAL':
+            primaryTypeStr = '힐러';
+            break;
+          case 'SUPPORT':
+            primaryTypeStr = '서포터';
+            break;
+        }
+
+        let attackTypeStr;
+        switch (attackType) {
+          case 'EXPLOSIVE':
+            attackTypeStr = '```diff\n- 폭발\n```';
+            break;
+          case 'PENETRATING':
+            attackTypeStr = '```fix\n관통\n```';
+            break;
+          case 'MYSTERY':
+            attackTypeStr = '```bash\n"신비"\n```';
+            break;
+        }
+
+        let defenseTypeStr;
+        switch (defenseType) {
+          case 'LIGHT_ARMOR':
+            defenseTypeStr = '```diff\n- 경장갑\n```';
+            break;
+          case 'HEAVY_ARMOR':
+            defenseTypeStr = '```fix\n중장갑\n```';
+            break;
+          case 'SPECIAL_ARMOR':
+            defenseTypeStr = '```bash\n"특수장갑"\n```';
+            break;
+        }
+
+        embed = new Embed(client, 'default')
+          .setTitle(`\`${student.name}\`의 상성이에요!`)
+          .addFields({
+            name: '**포지션**',
+            value: `>>> ${getEmoji(
+              `primaryType_${primaryType.toLowerCase()}`
+            )} **${primaryTypeStr}** | ***${compatibility.position}***`,
+            inline: true
+          })
+          .addFields({
+            name: '**공격 타입**',
+            value: `${attackTypeStr}`,
+            inline: true
+          })
+          .addFields({
+            name: '**방어 타입**',
+            value: `${defenseTypeStr}`,
+            inline: true
+          })
+          .addFields({
+            name: '**장소별 전투력**',
+            value: `>>> ${getEmoji('terrain_street')} 시가지: ${getEmoji(
+              `activity_${terrains.street}`
+            )} | ${getEmoji('terrain_outdoor')} 야외전: ${getEmoji(
+              `activity_${terrains.outdoor}`
+            )} | ${getEmoji('terrain_indoor')} 실내전: ${getEmoji(
+              `activity_${terrains.indoor}`
+            )}`,
+            inline: true
+          });
+      }
+
+      if (key === 'skills') {
+        const {
+          ex: exSkill,
+          primary: primarySkill,
+          reinforce: reinforceSkill,
+          sub: subSkill
+        } = student.skills;
+
+        const exDescription = skillDescriptionFormat(
+          exSkill.description,
+          exSkill.variables,
+          1
+        );
+        const primaryDescription = skillDescriptionFormat(
+          primarySkill.description,
+          primarySkill.variables,
+          1
+        );
+        const reinforceDescription = skillDescriptionFormat(
+          reinforceSkill.description,
+          reinforceSkill.variables,
+          1
+        );
+        const subDescription = skillDescriptionFormat(
+          subSkill.description,
+          subSkill.variables,
+          1
+        );
+
+        embed = new Embed(client, 'default')
+          .setTitle(`\`${student.name}\`의 스킬이에요!`)
+          .addFields({
+            name: `**[EX 스킬] ${exSkill.name}**`,
+            value: `>>> ***COST*: \`${exSkill.cost}\`**\n${exDescription}`
+          })
+          .addFields({
+            name: `**[기본 스킬] ${primarySkill.name}**`,
+            value: `>>> ${primaryDescription}`
+          })
+          .addFields({
+            name: `**[강화 스킬] ${reinforceSkill.name}**`,
+            value: `>>> ${reinforceDescription}`
+          })
+          .addFields({
+            name: `**[서브 스킬] ${subSkill.name}**`,
+            value: `>>> ${subDescription}`
+          });
+      }
+
       await interaction.deferUpdate();
       await interaction.message.edit({
         embeds: embed ? [embed] : undefined,
@@ -198,7 +328,7 @@ export default new Event('interactionCreate', async (client, interaction) => {
                       style: ButtonStyle.Danger
                     }),
                     new ButtonBuilder({
-                      customId: 'student-info-stats-select-skill-setting',
+                      customId: 'student-info-stats-select-skills-setting',
                       label: '스킬 설정',
                       emoji: '📝',
                       style: ButtonStyle.Success
@@ -242,17 +372,17 @@ export default new Event('interactionCreate', async (client, interaction) => {
                   },
                   {
                     label: '상성 정보',
-                    value: `${student.id}:fit`,
+                    value: `${student.id}:compatibility`,
                     description: '학생의 상성 정보를 보여줍니다.',
                     emoji: '✨',
-                    default: key === 'fit'
+                    default: key === 'compatibility'
                   },
                   {
                     label: '스킬',
-                    value: `${student.id}:skill`,
+                    value: `${student.id}:skills`,
                     description: '학생의 스킬을 보여줍니다.',
                     emoji: '📚',
-                    default: key === 'skill'
+                    default: key === 'skills'
                   },
                   {
                     label: '무기 및 장비',

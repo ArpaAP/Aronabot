@@ -34,6 +34,40 @@ export interface Student {
     crowdControlResistance: number;
     recoveryEffectEnhancement: number;
   };
+  compatibility: {
+    primaryType: 'TANK' | 'DEAL' | 'HEAL' | 'SUPPORT';
+    position: 'FRONT' | 'MIDDLE' | 'BACK';
+    attackType: 'EXPLOSIVE' | 'PENETRATING' | 'MYSTERY';
+    defenseType: 'LIGHT_ARMOR' | 'HEAVY_ARMOR' | 'SPECIAL_ARMOR';
+    terrains: {
+      street: 'S' | 'A' | 'B' | 'C' | 'D';
+      outdoor: 'S' | 'A' | 'B' | 'C' | 'D';
+      indoor: 'S' | 'A' | 'B' | 'C' | 'D';
+    };
+  };
+  skills: {
+    ex: {
+      name: string;
+      cost: number;
+      description: string;
+      variables: { [key: string]: string[] };
+    };
+    primary: {
+      name: string;
+      description: string;
+      variables: { [key: string]: string[] };
+    };
+    reinforce: {
+      name: string;
+      description: string;
+      variables: { [key: string]: string[] };
+    };
+    sub: {
+      name: string;
+      description: string;
+      variables: { [key: string]: string[] };
+    };
+  };
   illustrator?: string;
   voiceActor?: string;
 }
@@ -157,6 +191,100 @@ export const StudentSchema = new Schema<Student>(
       recoveryEffectEnhancement: {
         type: Number,
         required: true
+      }
+    },
+    compatibility: {
+      primaryType: {
+        type: String,
+        required: true
+      },
+      position: {
+        type: String,
+        required: true
+      },
+      attackType: {
+        type: String,
+        required: true
+      },
+      defenseType: {
+        type: String,
+        required: true
+      },
+      terrains: {
+        street: {
+          type: String,
+          required: true
+        },
+        outdoor: {
+          type: String,
+          required: true
+        },
+        indoor: {
+          type: String,
+          required: true
+        }
+      }
+    },
+    skills: {
+      ex: {
+        name: {
+          type: String,
+          required: true
+        },
+        cost: {
+          type: Number,
+          required: true
+        },
+        description: {
+          type: String,
+          required: true
+        },
+        variables: {
+          type: Schema.Types.Mixed,
+          required: true
+        }
+      },
+      primary: {
+        name: {
+          type: String,
+          required: true
+        },
+        description: {
+          type: String,
+          required: true
+        },
+        variables: {
+          type: Schema.Types.Mixed,
+          required: true
+        }
+      },
+      reinforce: {
+        name: {
+          type: String,
+          required: true
+        },
+        description: {
+          type: String,
+          required: true
+        },
+        variables: {
+          type: Schema.Types.Mixed,
+          required: true
+        }
+      },
+      sub: {
+        name: {
+          type: String,
+          required: true
+        },
+        description: {
+          type: String,
+          required: true
+        },
+        variables: {
+          type: Schema.Types.Mixed,
+          required: true
+        }
       }
     },
     illustrator: {
