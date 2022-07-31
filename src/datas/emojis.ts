@@ -63,6 +63,26 @@ const emojis = [
     name: 'terrain_indoor',
     id: '1003149110406287360',
     guildId: '1002795265813655643'
+  },
+  {
+    name: 'skill_shiroko_ex',
+    id: '1003252300502016051',
+    guildId: '1003250128880156723'
+  },
+  {
+    name: 'skill_shiroko_primary',
+    id: '1003252302037127269',
+    guildId: '1003250128880156723'
+  },
+  {
+    name: 'skill_shiroko_reinforce',
+    id: '1003252303681310741',
+    guildId: '1003250128880156723'
+  },
+  {
+    name: 'skill_shiroko_sub',
+    id: '1003252303681310741',
+    guildId: '1003250128880156723'
   }
 ];
 

@@ -17,11 +17,15 @@ export interface Student {
   height: number;
   birth: string;
   hobby?: string;
-  defaultStats: {
-    health: number;
-    attack: number;
-    defense: number;
-    healing: number;
+  stats: {
+    health1: number;
+    health100: number;
+    attack1: number;
+    attack100: number;
+    defense1: number;
+    defense100: number;
+    healing1: number;
+    healing100: number;
     hit: number;
     dodge: number;
     critical: number;
@@ -67,6 +71,11 @@ export interface Student {
       description: string;
       variables: { [key: string]: string[] };
     };
+  };
+  uniqueWeapon: {
+    name: string;
+    type: 'SG' | 'SMG' | 'AR' | 'GL' | 'HG' | 'SR' | 'RG' | 'MG' | 'MT';
+    description: string;
   };
   illustrator?: string;
   voiceActor?: string;
@@ -131,20 +140,36 @@ export const StudentSchema = new Schema<Student>(
     hobby: {
       type: String
     },
-    defaultStats: {
-      health: {
+    stats: {
+      health1: {
         type: Number,
         required: true
       },
-      attack: {
+      health100: {
         type: Number,
         required: true
       },
-      defense: {
+      attack1: {
         type: Number,
         required: true
       },
-      healing: {
+      attack100: {
+        type: Number,
+        required: true
+      },
+      defense1: {
+        type: Number,
+        required: true
+      },
+      defense100: {
+        type: Number,
+        required: true
+      },
+      healing1: {
+        type: Number,
+        required: true
+      },
+      healing100: {
         type: Number,
         required: true
       },
@@ -285,6 +310,20 @@ export const StudentSchema = new Schema<Student>(
           type: Schema.Types.Mixed,
           required: true
         }
+      }
+    },
+    uniqueWeapon: {
+      name: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+      description: {
+        type: String,
+        required: true
       }
     },
     illustrator: {

@@ -94,38 +94,38 @@ export default new BaseCommand(
               options: [
                 {
                   label: '기본 정보',
-                  value: `${student.id}:basic`,
+                  value: `${student.code}:basic`,
                   description: '학생의 기본적인 정보를 보여줍니다.',
                   emoji: '📝',
                   default: true
                 },
                 {
                   label: '학생 소개',
-                  value: `${student.id}:introduction`,
+                  value: `${student.code}:introduction`,
                   description: '학생 소개를 보여줍니다.',
                   emoji: '📒'
                 },
                 {
                   label: '능력치',
-                  value: `${student.id}:stats`,
+                  value: `${student.code}:stats`,
                   description: '학생의 능력치를 보여줍니다.',
                   emoji: '📊'
                 },
                 {
                   label: '상성 정보',
-                  value: `${student.id}:compatibility`,
+                  value: `${student.code}:compatibility`,
                   description: '학생의 상성 정보를 보여줍니다.',
                   emoji: '✨'
                 },
                 {
                   label: '스킬',
-                  value: `${student.id}:skills`,
+                  value: `${student.code}:skills`,
                   description: '학생의 스킬을 보여줍니다.',
                   emoji: '📚'
                 },
                 {
                   label: '무기 및 장비',
-                  value: `${student.id}:weapon`,
+                  value: `${student.code}:weapons`,
                   description: '학생의 무기 및 장비를 보여줍니다.',
                   emoji: '🗡'
                 }
@@ -226,38 +226,38 @@ export default new BaseCommand(
                 options: [
                   {
                     label: '기본 정보',
-                    value: `${student.id}:basic`,
+                    value: `${student.code}:basic`,
                     description: '학생의 기본적인 정보를 보여줍니다.',
                     emoji: '📝',
                     default: true
                   },
                   {
                     label: '학생 소개',
-                    value: `${student.id}:introduction`,
+                    value: `${student.code}:introduction`,
                     description: '학생 소개를 보여줍니다.',
                     emoji: '📒'
                   },
                   {
                     label: '능력치',
-                    value: `${student.id}:stats`,
+                    value: `${student.code}:stats`,
                     description: '학생의 능력치를 보여줍니다.',
                     emoji: '📊'
                   },
                   {
                     label: '상성 정보',
-                    value: `${student.id}:compatibility`,
+                    value: `${student.code}:compatibility`,
                     description: '학생의 상성 정보를 보여줍니다.',
                     emoji: '✨'
                   },
                   {
                     label: '스킬',
-                    value: `${student.id}:skills`,
+                    value: `${student.code}:skills`,
                     description: '학생의 스킬을 보여줍니다.',
                     emoji: '📚'
                   },
                   {
                     label: '무기 및 장비',
-                    value: `${student.id}:weapon`,
+                    value: `${student.code}:weapons`,
                     description: '학생의 무기 및 장비를 보여줍니다.',
                     emoji: '🗡'
                   }

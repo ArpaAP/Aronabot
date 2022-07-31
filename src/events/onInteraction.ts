@@ -3,18 +3,174 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
-  SelectMenuBuilder
+  Client,
+  ModalActionRowComponentBuilder,
+  ModalBuilder,
+  SelectMenuBuilder,
+  TextInputBuilder,
+  TextInputStyle
 } from 'discord.js';
 import CommandManager from '../managers/CommandManager';
 import ErrorManager from '../managers/ErrorManager';
 import { Club } from '../schemas/Club';
 import { Organization } from '../schemas/Organization';
-import StudentModel from '../schemas/Student';
+import StudentModel, { Student } from '../schemas/Student';
 import { Event } from '../structures/Event';
 import Embed from '../utils/Embed';
 import getEmoji from '../utils/GetEmoji';
 import numberWithCommas from '../utils/NumberWithCommas';
 import skillDescriptionFormat from '../utils/SkillFormatter';
+
+const getStatsEmbed = (
+  client: Client,
+  student: Student,
+  stars: number,
+  level: number
+) => {
+  const starscaleHp = [1, 1.05, 1.12, 1.21, 1.35];
+  const starscaleAttack = [1, 1.1, 1.22, 1.36, 1.53];
+  const starscaleHealing = [1, 1.075, 1.175, 1.295, 1.445];
+
+  const { stats } = student;
+
+  const levelscale = (level - 1) / 99;
+  const health = Math.ceil(
+    parseFloat(
+      (
+        parseFloat(
+          Math.round(
+            stats.health1 + (stats.health100 - stats.health1) * levelscale
+          ).toFixed(4)
+        ) * starscaleHp[stars - 1]
+      ).toFixed(4)
+    )
+  );
+  const attack = Math.ceil(
+    parseFloat(
+      (
+        parseFloat(
+          Math.round(
+            stats.attack1 + (stats.attack100 - stats.attack1) * levelscale
+          ).toFixed(4)
+        ) * starscaleAttack[stars - 1]
+      ).toFixed(4)
+    )
+  );
+  const defense = Math.round(
+    parseFloat(
+      (
+        stats.defense1 +
+        (stats.defense100 - stats.defense1) * levelscale
+      ).toFixed(4)
+    )
+  );
+  const healing = Math.ceil(
+    parseFloat(
+      (
+        parseFloat(
+          Math.round(
+            stats.healing1 + (stats.healing100 - stats.healing1) * levelscale
+          ).toFixed(4)
+        ) * starscaleHealing[stars - 1]
+      ).toFixed(4)
+    )
+  );
+
+  return new Embed(client, 'default')
+    .setTitle(`📊 \`${student.name}\`의 능력치에요!`)
+    .setDescription(
+      `현재 표시 기준은 ⭐️**x${stars}** | 레벨 **${level}** | 인연 레벨 **1** | 스킬 레벨 **기본** | 스킬 스탯 **기본** 입니다!`
+    )
+    .addFields({
+      name: '**🔹 기본**',
+      value:
+        `>>> 체력: **${numberWithCommas(health)}**\n` +
+        `공격력: **${numberWithCommas(attack)}**\n` +
+        `방어력: **${numberWithCommas(defense)}**\n` +
+        `치유력: **${numberWithCommas(healing)}**\n`,
+      inline: true
+    })
+    .addFields({
+      name: '**🔸 상세**',
+      value:
+        `>>> 명중 수치: **${numberWithCommas(stats.hit)}**\n` +
+        `회피 수치: **${numberWithCommas(stats.dodge)}**\n` +
+        `치명 수치: **${numberWithCommas(stats.critical)}**\n` +
+        `치명 저항력: **${numberWithCommas(stats.criticalResistance)}**\n` +
+        `치명 대미지: **${numberWithCommas(stats.criticalDamage * 100)}%**\n` +
+        `치명 대미지 저항률: **${numberWithCommas(
+          stats.criticalDamageResistance * 100
+        )}%**\n`,
+      inline: true
+    })
+    .addFields({
+      name: '** **',
+      value:
+        `안정 수치: **${numberWithCommas(stats.stability)}**\n` +
+        `사거리: **${numberWithCommas(stats.range)}**\n` +
+        `군중 제어 강화력: **${numberWithCommas(
+          stats.crowdControlEnhancement
+        )}**\n` +
+        `군중 제어 저항력: **${numberWithCommas(
+          stats.crowdControlResistance
+        )}**\n` +
+        `받는 회복 효과 강화율: **${numberWithCommas(
+          stats.recoveryEffectEnhancement * 100
+        )}%**\n`,
+      inline: true
+    });
+};
+
+const getStatsSelectMenu = (student: Student, selected: string) => {
+  return new SelectMenuBuilder({
+    customId: 'student-info-select',
+    placeholder: '상세 정보를 확인하려면 여기를 클릭하세요!',
+    options: [
+      {
+        label: '기본 정보',
+        value: `${student.code}:basic`,
+        description: '학생의 기본적인 정보를 보여줍니다.',
+        emoji: '📝',
+        default: selected === 'basic'
+      },
+      {
+        label: '학생 소개',
+        value: `${student.code}:introduction`,
+        description: '학생 소개를 보여줍니다.',
+        emoji: '📒',
+        default: selected === 'introduction'
+      },
+      {
+        label: '능력치',
+        value: `${student.code}:stats`,
+        description: '학생의 능력치를 보여줍니다.',
+        emoji: '📊',
+        default: selected === 'stats'
+      },
+      {
+        label: '상성 정보',
+        value: `${student.code}:compatibility`,
+        description: '학생의 상성 정보를 보여줍니다.',
+        emoji: '✨',
+        default: selected === 'compatibility'
+      },
+      {
+        label: '스킬',
+        value: `${student.code}:skills`,
+        description: '학생의 스킬을 보여줍니다.',
+        emoji: '📚',
+        default: selected === 'skills'
+      },
+      {
+        label: '무기 및 장비',
+        value: `${student.code}:weapons`,
+        description: '학생의 무기 및 장비를 보여줍니다.',
+        emoji: '🗡',
+        default: selected === 'weapons'
+      }
+    ]
+  });
+};
 
 export default new Event('interactionCreate', async (client, interaction) => {
   const commandManager = new CommandManager(client);
@@ -42,8 +198,8 @@ export default new Event('interactionCreate', async (client, interaction) => {
     if (interaction.user.bot) return;
 
     if (interaction.customId === 'student-info-select') {
-      const [studentId, key] = interaction.values[0].split(':');
-      const student = await StudentModel.findById(studentId)
+      const [code, key] = interaction.values[0].split(':');
+      const student = await StudentModel.findOne({ code })
         .populate('belong')
         .populate('club');
 
@@ -108,75 +264,17 @@ export default new Event('interactionCreate', async (client, interaction) => {
 
       if (key === 'introduction') {
         embed = new Embed(client, 'default')
-          .setTitle(`\`${student.name}\`의 소개에요!`)
+          .setTitle(`📒 \`${student.name}\`의 소개에요!`)
           .setDescription(
             `**"${student.ments.intro}"**\n\n>>> ${student.description}`
           )
           .setThumbnail(
-            `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png`
+            `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/standings/${student.code}.png`
           );
       }
 
       if (key === 'stats') {
-        embed = new Embed(client, 'default')
-          .setTitle(`\`${student.name}\`의 능력치에요!`)
-          .setDescription(
-            '현재 표시 기준은 ⭐️**x3** | 레벨 **1** | 인연 레벨 **1** | 스킬 레벨 **기본** | 스킬 스탯 **기본** 입니다!'
-          )
-          .addFields({
-            name: '**🔹 기본**',
-            value:
-              `>>> 체력: **${numberWithCommas(
-                student.defaultStats.health
-              )}**\n` +
-              `공격력: **${numberWithCommas(student.defaultStats.attack)}**\n` +
-              `방어력: **${numberWithCommas(
-                student.defaultStats.defense
-              )}**\n` +
-              `치유력: **${numberWithCommas(student.defaultStats.healing)}**\n`,
-            inline: true
-          })
-          .addFields({
-            name: '**🔸 상세**',
-            value:
-              `>>> 명중 수치: **${numberWithCommas(
-                student.defaultStats.hit
-              )}**\n` +
-              `회피 수치: **${numberWithCommas(
-                student.defaultStats.dodge
-              )}**\n` +
-              `치명 수치: **${numberWithCommas(
-                student.defaultStats.critical
-              )}**\n` +
-              `치명 저항력: **${numberWithCommas(
-                student.defaultStats.criticalResistance
-              )}**\n` +
-              `치명 대미지: **${numberWithCommas(
-                student.defaultStats.criticalDamage * 100
-              )}%**\n` +
-              `치명 대미지 저항률: **${numberWithCommas(
-                student.defaultStats.criticalDamageResistance * 100
-              )}%**\n`,
-            inline: true
-          })
-          .addFields({
-            name: '** **',
-            value:
-              `안정 수치: **${numberWithCommas(
-                student.defaultStats.stability
-              )}**\n` +
-              `사거리: **${numberWithCommas(student.defaultStats.range)}**\n` +
-              `군중 제어 강화력: **${numberWithCommas(
-                student.defaultStats.crowdControlEnhancement
-              )}**\n` +
-              `군중 제어 저항력: **${numberWithCommas(
-                student.defaultStats.crowdControlResistance
-              )}**\n` +
-              `받는 회복 효과 강화율: **${numberWithCommas(
-                student.defaultStats.recoveryEffectEnhancement * 100
-              )}%**\n`,
-            inline: true
-          });
+        embed = getStatsEmbed(client, student, student.stars, 1);
       }
 
       if (key === 'compatibility') {
@@ -227,7 +325,7 @@ export default new Event('interactionCreate', async (client, interaction) => {
         }
 
         embed = new Embed(client, 'default')
-          .setTitle(`\`${student.name}\`의 상성이에요!`)
+          .setTitle(`✨ \`${student.name}\`의 상성이에요!`)
           .addFields({
             name: '**포지션**',
             value: `>>> ${getEmoji(
@@ -288,23 +386,34 @@ export default new Event('interactionCreate', async (client, interaction) => {
         );
 
         embed = new Embed(client, 'default')
-          .setTitle(`\`${student.name}\`의 스킬이에요!`)
-          .addFields({
-            name: `**[EX 스킬] ${exSkill.name}**`,
-            value: `>>> ***COST*: \`${exSkill.cost}\`**\n${exDescription}`
-          })
-          .addFields({
-            name: `**[기본 스킬] ${primarySkill.name}**`,
-            value: `>>> ${primaryDescription}`
-          })
-          .addFields({
-            name: `**[강화 스킬] ${reinforceSkill.name}**`,
-            value: `>>> ${reinforceDescription}`
-          })
-          .addFields({
-            name: `**[서브 스킬] ${subSkill.name}**`,
-            value: `>>> ${subDescription}`
-          });
+          .setTitle(`📚 \`${student.name}\`의 스킬이에요!`)
+          .setDescription(
+            `**1레벨 기준으로 표시중입니다!** 변경하려면 **[스킬 레벨 선택]** 버튼을 클릭해주세요.\n\n*[EX]* **${getEmoji(
+              `skill_${student.code}_ex`
+            )} ${exSkill.name}**\n> ***COST*: \`${
+              exSkill.cost
+            }\`**\n${exDescription}\n\n` +
+              `*[기본]* **${getEmoji(`skill_${student.code}_primary`)} ${
+                primarySkill.name
+              }**\n> ${primaryDescription}\n\n` +
+              `*[강화]* **${getEmoji(`skill_${student.code}_reinforce`)} ${
+                reinforceSkill.name
+              }**\n> ${reinforceDescription}\n\n` +
+              `*[서브]* **${getEmoji(`skill_${student.code}_sub`)} ${
+                subSkill.name
+              }**\n> ${subDescription}`
+          );
+      }
+
+      if (key === 'weapons') {
+        const { name, type, description } = student.uniqueWeapon;
+
+        embed = new Embed(client, 'default')
+          .setTitle(`🗡 \`${student.name}\`의 무기 및 장비에요!`)
+          .setDescription(`*[${type}]* **${name}**\n\n>>> ${description}`)
+          .setImage(
+            `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/weapons/weapon_${student.code}.png`
+          );
       }
 
       await interaction.deferUpdate();
@@ -316,25 +425,25 @@ export default new Event('interactionCreate', async (client, interaction) => {
                 new ActionRowBuilder<ButtonBuilder>({
                   components: [
                     new ButtonBuilder({
-                      customId: 'student-info-stats-select-level',
-                      label: '레벨 선택',
+                      customId: `${student.code}:student-info-stats-select-level`,
+                      label: '별 및 레벨 선택',
                       emoji: '📈',
                       style: ButtonStyle.Primary
                     }),
                     new ButtonBuilder({
-                      customId: 'student-info-stats-select-destiny-level',
+                      customId: `${student.code}:student-info-stats-select-destiny-level`,
                       label: '인연 레벨 선택',
                       emoji: '🤍',
                       style: ButtonStyle.Danger
                     }),
                     new ButtonBuilder({
-                      customId: 'student-info-stats-select-skills-setting',
+                      customId: `${student.code}:student-info-stats-select-skills-setting`,
                       label: '스킬 설정',
                       emoji: '📝',
                       style: ButtonStyle.Success
                     }),
                     new ButtonBuilder({
-                      customId: 'student-info-stats-select-weapon-setting',
+                      customId: `${student.code}:student-info-stats-select-weapon-setting`,
                       label: '장비 선택',
                       emoji: '🛡',
                       style: ButtonStyle.Secondary
@@ -343,57 +452,144 @@ export default new Event('interactionCreate', async (client, interaction) => {
                 })
               ]
             : []),
+          ...(key === 'skills'
+            ? [
+                new ActionRowBuilder<ButtonBuilder>({
+                  components: [
+                    new ButtonBuilder({
+                      customId: `${student.code}:student-info-skills-select-skill-level`,
+                      label: '스킬 레벨 선택',
+                      emoji: '📈',
+                      style: ButtonStyle.Primary
+                    })
+                  ]
+                })
+              ]
+            : []),
           new ActionRowBuilder<SelectMenuBuilder>({
+            components: [getStatsSelectMenu(student, key)]
+          })
+        ]
+      });
+    }
+  }
+
+  if (interaction.isButton()) {
+    const [code, customId] = interaction.customId.split(':');
+
+    const student = await StudentModel.findOne({ code });
+
+    if (!student) return;
+
+    if (customId === 'student-info-stats-select-level') {
+      const modal = new ModalBuilder({
+        customId: `${code}:student-info-stats-select-level-modal`,
+        title: '학생 레벨 선택',
+        components: [
+          new ActionRowBuilder<ModalActionRowComponentBuilder>({
             components: [
-              new SelectMenuBuilder({
-                customId: 'student-info-select',
-                placeholder: '상세 정보를 확인하려면 여기를 클릭하세요!',
-                options: [
-                  {
-                    label: '기본 정보',
-                    value: `${student.id}:basic`,
-                    description: '학생의 기본적인 정보를 보여줍니다.',
-                    emoji: '📝',
-                    default: key === 'basic'
-                  },
-                  {
-                    label: '학생 소개',
-                    value: `${student.id}:introduction`,
-                    description: '학생 소개를 보여줍니다.',
-                    emoji: '📒',
-                    default: key === 'introduction'
-                  },
-                  {
-                    label: '능력치',
-                    value: `${student.id}:stats`,
-                    description: '학생의 능력치를 보여줍니다.',
-                    emoji: '📊',
-                    default: key === 'stats'
-                  },
-                  {
-                    label: '상성 정보',
-                    value: `${student.id}:compatibility`,
-                    description: '학생의 상성 정보를 보여줍니다.',
-                    emoji: '✨',
-                    default: key === 'compatibility'
-                  },
-                  {
-                    label: '스킬',
-                    value: `${student.id}:skills`,
-                    description: '학생의 스킬을 보여줍니다.',
-                    emoji: '📚',
-                    default: key === 'skills'
-                  },
-                  {
-                    label: '무기 및 장비',
-                    value: `${student.id}:weapon`,
-                    description: '학생의 무기 및 장비를 보여줍니다.',
-                    emoji: '🗡',
-                    default: key === 'weapon'
-                  }
-                ]
+              new TextInputBuilder({
+                customId: 'student-info-stats-select-level-modal-stars',
+                label: '학생 레벨 (숫자만 입력하세요)',
+                placeholder: '학생 별 수를 입력하세요! (숫자만 입력하세요)',
+                style: TextInputStyle.Short,
+                required: true,
+                value: student.stars.toString(),
+                minLength: 1,
+                maxLength: 1
               })
             ]
+          }),
+          new ActionRowBuilder<ModalActionRowComponentBuilder>({
+            components: [
+              new TextInputBuilder({
+                customId: 'student-info-stats-select-level-modal-level',
+                label: '학생 레벨 (최대 75, 숫자만 입력하세요)',
+                placeholder: '학생 레벨을 입력하세요! (숫자만 입력하세요)',
+                style: TextInputStyle.Short,
+                required: true,
+                value: '1',
+                minLength: 1,
+                maxLength: 2
+              })
+            ]
+          })
+        ]
+      });
+
+      await interaction.showModal(modal);
+    }
+  }
+
+  if (interaction.isModalSubmit()) {
+    const [code, customId] = interaction.customId.split(':');
+
+    if (customId === 'student-info-stats-select-level-modal') {
+      const student = await StudentModel.findOne({ code });
+
+      if (!student) return;
+
+      const stars = Number(
+        interaction.fields.getTextInputValue(
+          'student-info-stats-select-level-modal-stars'
+        )
+      );
+      const level = Number(
+        interaction.fields.getTextInputValue(
+          'student-info-stats-select-level-modal-level'
+        )
+      );
+
+      if (isNaN(stars) || stars < 1 || stars > 5) {
+        return interaction.reply({
+          content: '별 수를 잘못 입력하셨어요! 1~5사이의 숫자만 입력해야 해요.',
+          ephemeral: true
+        });
+      }
+      if (isNaN(level) || stars < 1 || stars > 75) {
+        return interaction.reply({
+          content:
+            '학생 레벨을 잘못 입력하셨어요! 1~75사이의 숫자만 입력해야 해요.',
+          ephemeral: true
+        });
+      }
+
+      const embed = getStatsEmbed(client, student, stars, level);
+
+      await (interaction as any).deferUpdate();
+      await interaction.message?.edit({
+        embeds: embed ? [embed] : undefined,
+        components: [
+          new ActionRowBuilder<ButtonBuilder>({
+            components: [
+              new ButtonBuilder({
+                customId: `${student.code}:student-info-stats-select-level`,
+                label: '별 및 레벨 선택',
+                emoji: '📈',
+                style: ButtonStyle.Primary
+              }),
+              new ButtonBuilder({
+                customId: `${student.code}:student-info-stats-select-destiny-level`,
+                label: '인연 레벨 선택',
+                emoji: '🤍',
+                style: ButtonStyle.Danger
+              }),
+              new ButtonBuilder({
+                customId: `${student.code}:student-info-stats-select-skills-setting`,
+                label: '스킬 설정',
+                emoji: '📝',
+                style: ButtonStyle.Success
+              }),
+              new ButtonBuilder({
+                customId: `${student.code}:student-info-stats-select-weapon-setting`,
+                label: '장비 선택',
+                emoji: '🛡',
+                style: ButtonStyle.Secondary
+              })
+            ]
+          }),
+          new ActionRowBuilder<SelectMenuBuilder>({
+            components: [getStatsSelectMenu(student, 'stats')]
           })
         ]
       });

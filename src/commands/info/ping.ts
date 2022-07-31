@@ -1,5 +1,4 @@
 import { BaseCommand } from '../../structures/Command';
-import Discord from 'discord.js';
 import Embed from '../../utils/Embed';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
