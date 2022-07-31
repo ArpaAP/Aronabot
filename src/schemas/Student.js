@@ -60,20 +60,36 @@ exports.StudentSchema = new mongoose_1.Schema({
     hobby: {
         type: String
     },
-    defaultStats: {
-        health: {
+    stats: {
+        health1: {
             type: Number,
             required: true
         },
-        attack: {
+        health100: {
             type: Number,
             required: true
         },
-        defense: {
+        attack1: {
             type: Number,
             required: true
         },
-        healing: {
+        attack100: {
+            type: Number,
+            required: true
+        },
+        defense1: {
+            type: Number,
+            required: true
+        },
+        defense100: {
+            type: Number,
+            required: true
+        },
+        healing1: {
+            type: Number,
+            required: true
+        },
+        healing100: {
             type: Number,
             required: true
         },
@@ -214,6 +230,20 @@ exports.StudentSchema = new mongoose_1.Schema({
                 type: mongoose_1.Schema.Types.Mixed,
                 required: true
             }
+        }
+    },
+    uniqueWeapon: {
+        name: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: String,
+            required: true
+        },
+        description: {
+            type: String,
+            required: true
         }
     },
     illustrator: {

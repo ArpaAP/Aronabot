@@ -12,6 +12,98 @@ const Embed_1 = __importDefault(require("../utils/Embed"));
 const GetEmoji_1 = __importDefault(require("../utils/GetEmoji"));
 const NumberWithCommas_1 = __importDefault(require("../utils/NumberWithCommas"));
 const SkillFormatter_1 = __importDefault(require("../utils/SkillFormatter"));
+const getStatsEmbed = (client, student, stars, level) => {
+    const starscaleHp = [1, 1.05, 1.12, 1.21, 1.35];
+    const starscaleAttack = [1, 1.1, 1.22, 1.36, 1.53];
+    const starscaleHealing = [1, 1.075, 1.175, 1.295, 1.445];
+    const { stats } = student;
+    const levelscale = (level - 1) / 99;
+    const health = Math.ceil(parseFloat((parseFloat(Math.round(stats.health1 + (stats.health100 - stats.health1) * levelscale).toFixed(4)) * starscaleHp[stars - 1]).toFixed(4)));
+    const attack = Math.ceil(parseFloat((parseFloat(Math.round(stats.attack1 + (stats.attack100 - stats.attack1) * levelscale).toFixed(4)) * starscaleAttack[stars - 1]).toFixed(4)));
+    const defense = Math.round(parseFloat((stats.defense1 +
+        (stats.defense100 - stats.defense1) * levelscale).toFixed(4)));
+    const healing = Math.ceil(parseFloat((parseFloat(Math.round(stats.healing1 + (stats.healing100 - stats.healing1) * levelscale).toFixed(4)) * starscaleHealing[stars - 1]).toFixed(4)));
+    return new Embed_1.default(client, 'default')
+        .setTitle(`📊 \`${student.name}\`의 능력치에요!`)
+        .setDescription(`현재 표시 기준은 ⭐️**x${stars}** | 레벨 **${level}** | 인연 레벨 **1** | 스킬 레벨 **기본** | 스킬 스탯 **기본** 입니다!`)
+        .addFields({
+        name: '**🔹 기본**',
+        value: `>>> 체력: **${(0, NumberWithCommas_1.default)(health)}**\n` +
+            `공격력: **${(0, NumberWithCommas_1.default)(attack)}**\n` +
+            `방어력: **${(0, NumberWithCommas_1.default)(defense)}**\n` +
+            `치유력: **${(0, NumberWithCommas_1.default)(healing)}**\n`,
+        inline: true
+    })
+        .addFields({
+        name: '**🔸 상세**',
+        value: `>>> 명중 수치: **${(0, NumberWithCommas_1.default)(stats.hit)}**\n` +
+            `회피 수치: **${(0, NumberWithCommas_1.default)(stats.dodge)}**\n` +
+            `치명 수치: **${(0, NumberWithCommas_1.default)(stats.critical)}**\n` +
+            `치명 저항력: **${(0, NumberWithCommas_1.default)(stats.criticalResistance)}**\n` +
+            `치명 대미지: **${(0, NumberWithCommas_1.default)(stats.criticalDamage * 100)}%**\n` +
+            `치명 대미지 저항률: **${(0, NumberWithCommas_1.default)(stats.criticalDamageResistance * 100)}%**\n`,
+        inline: true
+    })
+        .addFields({
+        name: '** **',
+        value: `안정 수치: **${(0, NumberWithCommas_1.default)(stats.stability)}**\n` +
+            `사거리: **${(0, NumberWithCommas_1.default)(stats.range)}**\n` +
+            `군중 제어 강화력: **${(0, NumberWithCommas_1.default)(stats.crowdControlEnhancement)}**\n` +
+            `군중 제어 저항력: **${(0, NumberWithCommas_1.default)(stats.crowdControlResistance)}**\n` +
+            `받는 회복 효과 강화율: **${(0, NumberWithCommas_1.default)(stats.recoveryEffectEnhancement * 100)}%**\n`,
+        inline: true
+    });
+};
+const getStatsSelectMenu = (student, selected) => {
+    return new discord_js_1.SelectMenuBuilder({
+        customId: 'student-info-select',
+        placeholder: '상세 정보를 확인하려면 여기를 클릭하세요!',
+        options: [
+            {
+                label: '기본 정보',
+                value: `${student.code}:basic`,
+                description: '학생의 기본적인 정보를 보여줍니다.',
+                emoji: '📝',
+                default: selected === 'basic'
+            },
+            {
+                label: '학생 소개',
+                value: `${student.code}:introduction`,
+                description: '학생 소개를 보여줍니다.',
+                emoji: '📒',
+                default: selected === 'introduction'
+            },
+            {
+                label: '능력치',
+                value: `${student.code}:stats`,
+                description: '학생의 능력치를 보여줍니다.',
+                emoji: '📊',
+                default: selected === 'stats'
+            },
+            {
+                label: '상성 정보',
+                value: `${student.code}:compatibility`,
+                description: '학생의 상성 정보를 보여줍니다.',
+                emoji: '✨',
+                default: selected === 'compatibility'
+            },
+            {
+                label: '스킬',
+                value: `${student.code}:skills`,
+                description: '학생의 스킬을 보여줍니다.',
+                emoji: '📚',
+                default: selected === 'skills'
+            },
+            {
+                label: '무기 및 장비',
+                value: `${student.code}:weapons`,
+                description: '학생의 무기 및 장비를 보여줍니다.',
+                emoji: '🗡',
+                default: selected === 'weapons'
+            }
+        ]
+    });
+};
 exports.default = new Event_1.Event('interactionCreate', async (client, interaction) => {
     const commandManager = new CommandManager_1.default(client);
     const errorManager = new ErrorManager_1.default(client);
@@ -37,8 +129,8 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
         if (interaction.user.bot)
             return;
         if (interaction.customId === 'student-info-select') {
-            const [studentId, key] = interaction.values[0].split(':');
-            const student = await Student_1.default.findById(studentId)
+            const [code, key] = interaction.values[0].split(':');
+            const student = await Student_1.default.findOne({ code })
                 .populate('belong')
                 .populate('club');
             if (!student)
@@ -97,41 +189,12 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
             }
             if (key === 'introduction') {
                 embed = new Embed_1.default(client, 'default')
-                    .setTitle(`\`${student.name}\`의 소개에요!`)
+                    .setTitle(`📒 \`${student.name}\`의 소개에요!`)
                     .setDescription(`**"${student.ments.intro}"**\n\n>>> ${student.description}`)
-                    .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png`);
+                    .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/standings/${student.code}.png`);
             }
             if (key === 'stats') {
-                embed = new Embed_1.default(client, 'default')
-                    .setTitle(`\`${student.name}\`의 능력치에요!`)
-                    .setDescription('현재 표시 기준은 ⭐️**x3** | 레벨 **1** | 인연 레벨 **1** | 스킬 레벨 **기본** | 스킬 스탯 **기본** 입니다!')
-                    .addFields({
-                    name: '**🔹 기본**',
-                    value: `>>> 체력: **${(0, NumberWithCommas_1.default)(student.defaultStats.health)}**\n` +
-                        `공격력: **${(0, NumberWithCommas_1.default)(student.defaultStats.attack)}**\n` +
-                        `방어력: **${(0, NumberWithCommas_1.default)(student.defaultStats.defense)}**\n` +
-                        `치유력: **${(0, NumberWithCommas_1.default)(student.defaultStats.healing)}**\n`,
-                    inline: true
-                })
-                    .addFields({
-                    name: '**🔸 상세**',
-                    value: `>>> 명중 수치: **${(0, NumberWithCommas_1.default)(student.defaultStats.hit)}**\n` +
-                        `회피 수치: **${(0, NumberWithCommas_1.default)(student.defaultStats.dodge)}**\n` +
-                        `치명 수치: **${(0, NumberWithCommas_1.default)(student.defaultStats.critical)}**\n` +
-                        `치명 저항력: **${(0, NumberWithCommas_1.default)(student.defaultStats.criticalResistance)}**\n` +
-                        `치명 대미지: **${(0, NumberWithCommas_1.default)(student.defaultStats.criticalDamage * 100)}%**\n` +
-                        `치명 대미지 저항률: **${(0, NumberWithCommas_1.default)(student.defaultStats.criticalDamageResistance * 100)}%**\n`,
-                    inline: true
-                })
-                    .addFields({
-                    name: '** **',
-                    value: `안정 수치: **${(0, NumberWithCommas_1.default)(student.defaultStats.stability)}**\n` +
-                        `사거리: **${(0, NumberWithCommas_1.default)(student.defaultStats.range)}**\n` +
-                        `군중 제어 강화력: **${(0, NumberWithCommas_1.default)(student.defaultStats.crowdControlEnhancement)}**\n` +
-                        `군중 제어 저항력: **${(0, NumberWithCommas_1.default)(student.defaultStats.crowdControlResistance)}**\n` +
-                        `받는 회복 효과 강화율: **${(0, NumberWithCommas_1.default)(student.defaultStats.recoveryEffectEnhancement * 100)}%**\n`,
-                    inline: true
-                });
+                embed = getStatsEmbed(client, student, student.stars, 1);
             }
             if (key === 'compatibility') {
                 const { compatibility } = student;
@@ -176,7 +239,7 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
                         break;
                 }
                 embed = new Embed_1.default(client, 'default')
-                    .setTitle(`\`${student.name}\`의 상성이에요!`)
+                    .setTitle(`✨ \`${student.name}\`의 상성이에요!`)
                     .addFields({
                     name: '**포지션**',
                     value: `>>> ${(0, GetEmoji_1.default)(`primaryType_${primaryType.toLowerCase()}`)} **${primaryTypeStr}** | ***${compatibility.position}***`,
@@ -205,23 +268,18 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
                 const reinforceDescription = (0, SkillFormatter_1.default)(reinforceSkill.description, reinforceSkill.variables, 1);
                 const subDescription = (0, SkillFormatter_1.default)(subSkill.description, subSkill.variables, 1);
                 embed = new Embed_1.default(client, 'default')
-                    .setTitle(`\`${student.name}\`의 스킬이에요!`)
-                    .addFields({
-                    name: `**[EX 스킬] ${exSkill.name}**`,
-                    value: `>>> ***COST*: \`${exSkill.cost}\`**\n${exDescription}`
-                })
-                    .addFields({
-                    name: `**[기본 스킬] ${primarySkill.name}**`,
-                    value: `>>> ${primaryDescription}`
-                })
-                    .addFields({
-                    name: `**[강화 스킬] ${reinforceSkill.name}**`,
-                    value: `>>> ${reinforceDescription}`
-                })
-                    .addFields({
-                    name: `**[서브 스킬] ${subSkill.name}**`,
-                    value: `>>> ${subDescription}`
-                });
+                    .setTitle(`📚 \`${student.name}\`의 스킬이에요!`)
+                    .setDescription(`**1레벨 기준으로 표시중입니다!** 변경하려면 **[스킬 레벨 선택]** 버튼을 클릭해주세요.\n\n*[EX]* **${(0, GetEmoji_1.default)(`skill_${student.code}_ex`)} ${exSkill.name}**\n> ***COST*: \`${exSkill.cost}\`**\n${exDescription}\n\n` +
+                    `*[기본]* **${(0, GetEmoji_1.default)(`skill_${student.code}_primary`)} ${primarySkill.name}**\n> ${primaryDescription}\n\n` +
+                    `*[강화]* **${(0, GetEmoji_1.default)(`skill_${student.code}_reinforce`)} ${reinforceSkill.name}**\n> ${reinforceDescription}\n\n` +
+                    `*[서브]* **${(0, GetEmoji_1.default)(`skill_${student.code}_sub`)} ${subSkill.name}**\n> ${subDescription}`);
+            }
+            if (key === 'weapons') {
+                const { name, type, description } = student.uniqueWeapon;
+                embed = new Embed_1.default(client, 'default')
+                    .setTitle(`🗡 \`${student.name}\`의 무기 및 장비에요!`)
+                    .setDescription(`*[${type}]* **${name}**\n\n>>> ${description}`)
+                    .setImage(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/weapons/weapon_${student.code}.png`);
             }
             await interaction.deferUpdate();
             await interaction.message.edit({
@@ -232,25 +290,25 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
                             new discord_js_1.ActionRowBuilder({
                                 components: [
                                     new discord_js_1.ButtonBuilder({
-                                        customId: 'student-info-stats-select-level',
-                                        label: '레벨 선택',
+                                        customId: `${student.code}:student-info-stats-select-level`,
+                                        label: '별 및 레벨 선택',
                                         emoji: '📈',
                                         style: discord_js_1.ButtonStyle.Primary
                                     }),
                                     new discord_js_1.ButtonBuilder({
-                                        customId: 'student-info-stats-select-destiny-level',
+                                        customId: `${student.code}:student-info-stats-select-destiny-level`,
                                         label: '인연 레벨 선택',
                                         emoji: '🤍',
                                         style: discord_js_1.ButtonStyle.Danger
                                     }),
                                     new discord_js_1.ButtonBuilder({
-                                        customId: 'student-info-stats-select-skills-setting',
+                                        customId: `${student.code}:student-info-stats-select-skills-setting`,
                                         label: '스킬 설정',
                                         emoji: '📝',
                                         style: discord_js_1.ButtonStyle.Success
                                     }),
                                     new discord_js_1.ButtonBuilder({
-                                        customId: 'student-info-stats-select-weapon-setting',
+                                        customId: `${student.code}:student-info-stats-select-weapon-setting`,
                                         label: '장비 선택',
                                         emoji: '🛡',
                                         style: discord_js_1.ButtonStyle.Secondary
@@ -259,57 +317,125 @@ exports.default = new Event_1.Event('interactionCreate', async (client, interact
                             })
                         ]
                         : []),
-                    new discord_js_1.ActionRowBuilder({
-                        components: [
-                            new discord_js_1.SelectMenuBuilder({
-                                customId: 'student-info-select',
-                                placeholder: '상세 정보를 확인하려면 여기를 클릭하세요!',
-                                options: [
-                                    {
-                                        label: '기본 정보',
-                                        value: `${student.id}:basic`,
-                                        description: '학생의 기본적인 정보를 보여줍니다.',
-                                        emoji: '📝',
-                                        default: key === 'basic'
-                                    },
-                                    {
-                                        label: '학생 소개',
-                                        value: `${student.id}:introduction`,
-                                        description: '학생 소개를 보여줍니다.',
-                                        emoji: '📒',
-                                        default: key === 'introduction'
-                                    },
-                                    {
-                                        label: '능력치',
-                                        value: `${student.id}:stats`,
-                                        description: '학생의 능력치를 보여줍니다.',
-                                        emoji: '📊',
-                                        default: key === 'stats'
-                                    },
-                                    {
-                                        label: '상성 정보',
-                                        value: `${student.id}:compatibility`,
-                                        description: '학생의 상성 정보를 보여줍니다.',
-                                        emoji: '✨',
-                                        default: key === 'compatibility'
-                                    },
-                                    {
-                                        label: '스킬',
-                                        value: `${student.id}:skills`,
-                                        description: '학생의 스킬을 보여줍니다.',
-                                        emoji: '📚',
-                                        default: key === 'skills'
-                                    },
-                                    {
-                                        label: '무기 및 장비',
-                                        value: `${student.id}:weapon`,
-                                        description: '학생의 무기 및 장비를 보여줍니다.',
-                                        emoji: '🗡',
-                                        default: key === 'weapon'
-                                    }
+                    ...(key === 'skills'
+                        ? [
+                            new discord_js_1.ActionRowBuilder({
+                                components: [
+                                    new discord_js_1.ButtonBuilder({
+                                        customId: `${student.code}:student-info-skills-select-skill-level`,
+                                        label: '스킬 레벨 선택',
+                                        emoji: '📈',
+                                        style: discord_js_1.ButtonStyle.Primary
+                                    })
                                 ]
                             })
                         ]
+                        : []),
+                    new discord_js_1.ActionRowBuilder({
+                        components: [getStatsSelectMenu(student, key)]
+                    })
+                ]
+            });
+        }
+    }
+    if (interaction.isButton()) {
+        const [code, customId] = interaction.customId.split(':');
+        const student = await Student_1.default.findOne({ code });
+        if (!student)
+            return;
+        if (customId === 'student-info-stats-select-level') {
+            const modal = new discord_js_1.ModalBuilder({
+                customId: `${code}:student-info-stats-select-level-modal`,
+                title: '학생 레벨 선택',
+                components: [
+                    new discord_js_1.ActionRowBuilder({
+                        components: [
+                            new discord_js_1.TextInputBuilder({
+                                customId: 'student-info-stats-select-level-modal-stars',
+                                label: '학생 레벨 (숫자만 입력하세요)',
+                                placeholder: '학생 별 수를 입력하세요! (숫자만 입력하세요)',
+                                style: discord_js_1.TextInputStyle.Short,
+                                required: true,
+                                value: student.stars.toString(),
+                                minLength: 1,
+                                maxLength: 1
+                            })
+                        ]
+                    }),
+                    new discord_js_1.ActionRowBuilder({
+                        components: [
+                            new discord_js_1.TextInputBuilder({
+                                customId: 'student-info-stats-select-level-modal-level',
+                                label: '학생 레벨 (최대 75, 숫자만 입력하세요)',
+                                placeholder: '학생 레벨을 입력하세요! (숫자만 입력하세요)',
+                                style: discord_js_1.TextInputStyle.Short,
+                                required: true,
+                                value: '1',
+                                minLength: 1,
+                                maxLength: 2
+                            })
+                        ]
+                    })
+                ]
+            });
+            await interaction.showModal(modal);
+        }
+    }
+    if (interaction.isModalSubmit()) {
+        const [code, customId] = interaction.customId.split(':');
+        if (customId === 'student-info-stats-select-level-modal') {
+            const student = await Student_1.default.findOne({ code });
+            if (!student)
+                return;
+            const stars = Number(interaction.fields.getTextInputValue('student-info-stats-select-level-modal-stars'));
+            const level = Number(interaction.fields.getTextInputValue('student-info-stats-select-level-modal-level'));
+            if (isNaN(stars) || stars < 1 || stars > 5) {
+                return interaction.reply({
+                    content: '별 수를 잘못 입력하셨어요! 1~5사이의 숫자만 입력해야 해요.',
+                    ephemeral: true
+                });
+            }
+            if (isNaN(level) || stars < 1 || stars > 75) {
+                return interaction.reply({
+                    content: '학생 레벨을 잘못 입력하셨어요! 1~75사이의 숫자만 입력해야 해요.',
+                    ephemeral: true
+                });
+            }
+            const embed = getStatsEmbed(client, student, stars, level);
+            await interaction.deferUpdate();
+            await interaction.message?.edit({
+                embeds: embed ? [embed] : undefined,
+                components: [
+                    new discord_js_1.ActionRowBuilder({
+                        components: [
+                            new discord_js_1.ButtonBuilder({
+                                customId: `${student.code}:student-info-stats-select-level`,
+                                label: '별 및 레벨 선택',
+                                emoji: '📈',
+                                style: discord_js_1.ButtonStyle.Primary
+                            }),
+                            new discord_js_1.ButtonBuilder({
+                                customId: `${student.code}:student-info-stats-select-destiny-level`,
+                                label: '인연 레벨 선택',
+                                emoji: '🤍',
+                                style: discord_js_1.ButtonStyle.Danger
+                            }),
+                            new discord_js_1.ButtonBuilder({
+                                customId: `${student.code}:student-info-stats-select-skills-setting`,
+                                label: '스킬 설정',
+                                emoji: '📝',
+                                style: discord_js_1.ButtonStyle.Success
+                            }),
+                            new discord_js_1.ButtonBuilder({
+                                customId: `${student.code}:student-info-stats-select-weapon-setting`,
+                                label: '장비 선택',
+                                emoji: '🛡',
+                                style: discord_js_1.ButtonStyle.Secondary
+                            })
+                        ]
+                    }),
+                    new discord_js_1.ActionRowBuilder({
+                        components: [getStatsSelectMenu(student, 'stats')]
                     })
                 ]
             });
