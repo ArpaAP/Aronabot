@@ -2,7 +2,7 @@ import { IConfig } from './typings';
 import fs from 'fs';
 
 let BUILD_NUMBER: string | null = fs
-  .readFileSync('.git/HEAD')
+  .readFileSync(__dirname + '/.git/HEAD')
   .toString()
   .trim();
 
@@ -11,7 +11,7 @@ if (BUILD_NUMBER?.indexOf(':') === -1) {
 } else {
   try {
     BUILD_NUMBER = fs
-      .readFileSync('.git/' + BUILD_NUMBER?.substring(5))
+      .readFileSync(__dirname + '/.git/' + BUILD_NUMBER?.substring(5))
       .toString()
       .trim()
       .substring(0, 7);
