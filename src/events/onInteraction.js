@@ -25,7 +25,7 @@ const getStatsEmbed = (client, student, stars, level) => {
     const healing = Math.ceil(parseFloat((parseFloat(Math.round(stats.healing1 + (stats.healing100 - stats.healing1) * levelscale).toFixed(4)) * starscaleHealing[stars - 1]).toFixed(4)));
     return new Embed_1.default(client, 'default')
         .setTitle(`📊 \`${student.name}\`의 능력치에요!`)
-        .setDescription(`현재 표시 기준은 ⭐️**x${stars}** | 레벨 **${level}** | 인연 레벨 **1** | 스킬 레벨 **기본** | 스킬 스탯 **기본** 입니다!`)
+        .setDescription(`현재 표시 기준은 ⭐️ **${stars}** | 레벨 **${level}** | 인연 레벨 **1** | 스킬 레벨 **기본** | 장비 **기본** 입니다!`)
         .addFields({
         name: '**🔹 기본**',
         value: `>>> 체력: **${(0, NumberWithCommas_1.default)(health)}**\n` +
