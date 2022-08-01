@@ -30,6 +30,7 @@ export interface IConfig {
     production: string[];
     development: string[];
   };
+  koreanbotsToken: string;
   bot: {
     sharding: boolean;
     shardingOptions?: ShardingManagerOptions;

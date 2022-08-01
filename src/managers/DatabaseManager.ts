@@ -28,7 +28,7 @@ export default class DatabaseManager extends BaseManager {
 
     this.client.db = mongoose.connection;
 
-    this.loadSchemas(schemaPath);
+    // this.loadSchemas(schemaPath);
   }
 
   private loadSchemas(schemaPath: string) {

@@ -26,6 +26,7 @@ const config: IConfig = {
   githubToken: '',
   supportURL: '',
   IOChannels: { production: [''], development: [''] },
+  koreanbotsToken: '',
   bot: {
     sharding: false,
     options: {

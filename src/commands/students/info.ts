@@ -1,10 +1,12 @@
 import { BaseCommand } from '../../structures/Command';
 import Embed from '../../utils/Embed';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { StudentModel } from '../../schemas/Student';
-import { Organization } from '../../schemas/Organization';
-import { Club } from '../../schemas/Club';
+import Organization from '../../schemas/Organization';
+import Club from '../../schemas/Club';
 import { ActionRowBuilder, SelectMenuBuilder } from 'discord.js';
+import students from '../../databases/students';
+import organizations from '../../databases/organizations';
+import clubs from '../../databases/clubs';
 
 export default new BaseCommand(
   {
@@ -19,18 +21,14 @@ export default new BaseCommand(
       return message.reply('학생 이름을 입력해주세요!');
     }
 
-    let student = await StudentModel.findOne({
-      $text: { $search: query }
-    })
-      .populate('belong')
-      .populate('club');
-
-    let organization = student?.belong as unknown as Organization | null;
-    let club = student?.club as unknown as Club | null;
+    let student = students.find((s) => s.name.includes(query));
 
     if (!student) {
       return message.reply('해당하는 학생이 없어요.');
     }
+
+    const organization = organizations.find((o) => o.id === student!.belong);
+    const club = clubs.find((c) => c.id === student!.belong);
 
     let embed = new Embed(client, 'default')
       .setTitle(`\`${student.name}\`의 기본 정보에요!`)
@@ -79,7 +77,7 @@ export default new BaseCommand(
         inline: true
       })
       .setThumbnail(
-        `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png` ??
+        `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.id}.png` ??
           null
       );
 
@@ -94,38 +92,38 @@ export default new BaseCommand(
               options: [
                 {
                   label: '기본 정보',
-                  value: `${student.code}:basic`,
+                  value: `${student.id}:basic`,
                   description: '학생의 기본적인 정보를 보여줍니다.',
                   emoji: '📝',
                   default: true
                 },
                 {
                   label: '학생 소개',
-                  value: `${student.code}:introduction`,
+                  value: `${student.id}:introduction`,
                   description: '학생 소개를 보여줍니다.',
                   emoji: '📒'
                 },
                 {
                   label: '능력치',
-                  value: `${student.code}:stats`,
+                  value: `${student.id}:stats`,
                   description: '학생의 능력치를 보여줍니다.',
                   emoji: '📊'
                 },
                 {
                   label: '상성 정보',
-                  value: `${student.code}:compatibility`,
+                  value: `${student.id}:compatibility`,
                   description: '학생의 상성 정보를 보여줍니다.',
                   emoji: '✨'
                 },
                 {
                   label: '스킬',
-                  value: `${student.code}:skills`,
+                  value: `${student.id}:skills`,
                   description: '학생의 스킬을 보여줍니다.',
                   emoji: '📚'
                 },
                 {
                   label: '무기 및 장비',
-                  value: `${student.code}:weapons`,
+                  value: `${student.id}:weapons`,
                   description: '학생의 무기 및 장비를 보여줍니다.',
                   emoji: '🗡'
                 }
@@ -151,11 +149,7 @@ export default new BaseCommand(
     async execute(client, interaction) {
       let query = interaction.options.getString('이름', true);
 
-      let student = await StudentModel.findOne({
-        $text: { $search: query }
-      })
-        .populate('belong')
-        .populate('club');
+      let student = students.find((s) => s.name.includes(query));
 
       let organization = student?.belong as unknown as Organization | null;
       let club = student?.club as unknown as Club | null;
@@ -211,7 +205,7 @@ export default new BaseCommand(
           inline: true
         })
         .setThumbnail(
-          `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png` ??
+          `https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.id}.png` ??
             null
         );
 
@@ -226,38 +220,38 @@ export default new BaseCommand(
                 options: [
                   {
                     label: '기본 정보',
-                    value: `${student.code}:basic`,
+                    value: `${student.id}:basic`,
                     description: '학생의 기본적인 정보를 보여줍니다.',
                     emoji: '📝',
                     default: true
                   },
                   {
                     label: '학생 소개',
-                    value: `${student.code}:introduction`,
+                    value: `${student.id}:introduction`,
                     description: '학생 소개를 보여줍니다.',
                     emoji: '📒'
                   },
                   {
                     label: '능력치',
-                    value: `${student.code}:stats`,
+                    value: `${student.id}:stats`,
                     description: '학생의 능력치를 보여줍니다.',
                     emoji: '📊'
                   },
                   {
                     label: '상성 정보',
-                    value: `${student.code}:compatibility`,
+                    value: `${student.id}:compatibility`,
                     description: '학생의 상성 정보를 보여줍니다.',
                     emoji: '✨'
                   },
                   {
                     label: '스킬',
-                    value: `${student.code}:skills`,
+                    value: `${student.id}:skills`,
                     description: '학생의 스킬을 보여줍니다.',
                     emoji: '📚'
                   },
                   {
                     label: '무기 및 장비',
-                    value: `${student.code}:weapons`,
+                    value: `${student.id}:weapons`,
                     description: '학생의 무기 및 장비를 보여줍니다.',
                     emoji: '🗡'
                   }

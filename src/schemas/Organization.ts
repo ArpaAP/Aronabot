@@ -1,24 +1,7 @@
-import { model, ObjectId, Schema } from 'mongoose';
-
-export interface Organization {
+interface Organization {
+  id: string;
   name: string;
   englishName: string;
 }
 
-export const OrganizationSchema = new Schema<Organization>(
-  {
-    name: {
-      type: String,
-      required: true
-    },
-    englishName: {
-      type: String,
-      required: true
-    }
-  },
-  { collection: 'organizations' }
-);
-
-const OrganizationModel = model('Organization', OrganizationSchema);
-
-export default OrganizationModel;
+export default Organization;

@@ -9,6 +9,7 @@ import ErrorManager from '../managers/ErrorManager';
 import DatabaseManager from '../managers/DatabaseManager';
 import { Connection, Model } from 'mongoose';
 import { config as dotenvConfig } from 'dotenv';
+import { Koreanbots } from 'koreanbots';
 
 const logger = new Logger('bot');
 
@@ -44,11 +45,13 @@ export default class BotClient extends Client {
     await this.login(token);
 
     await this.setStatus();
+    await this.updateKoreanbotsServers();
 
     setInterval(async () => {
       await this.setStatus();
       this.presenceIndex++;
     }, 12000);
+    setInterval(this.updateKoreanbotsServers, 60000);
   }
 
   public async setStatus(
@@ -84,5 +87,21 @@ export default class BotClient extends Client {
         status: 'online'
       });
     }
+  }
+
+  public async updateKoreanbotsServers() {
+    if (!config.koreanbotsToken) return;
+
+    const koreanbots = new Koreanbots({
+      api: {
+        token: config.koreanbotsToken
+      },
+      clientID: this.user!.id
+    });
+
+    await koreanbots.mybot.update({
+      servers: this.guilds.cache.size,
+      shards: this.shard?.count
+    });
   }
 }
