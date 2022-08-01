@@ -58,17 +58,14 @@ class BotClient extends discord_js_1.Client {
         }
         else if (status.includes('online')) {
             let presence;
-            if (this.presenceIndex % 4 === 0) {
+            if (this.presenceIndex % 3 === 0) {
                 presence = `${this.config.bot.prefix}도움을 입력해보세요!`;
             }
-            if (this.presenceIndex % 4 === 1) {
+            if (this.presenceIndex % 3 === 1) {
                 presence = `${this.config.bot.prefix}도움 | ${this.VERSION}`;
             }
-            if (this.presenceIndex % 4 === 2) {
+            if (this.presenceIndex % 3 === 2) {
                 presence = `${this.config.bot.prefix}도움 | ${this.guilds.cache.size} 서버`;
-            }
-            if (this.presenceIndex % 4 === 3) {
-                presence = `${this.config.bot.prefix}도움 | ${this.users.cache.size} 사용자`;
             }
             this.user?.setPresence({
                 activities: [{ name: presence }],
