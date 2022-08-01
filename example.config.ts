@@ -25,6 +25,7 @@ const config: IConfig = {
   BUILD_VERSION: '1.0.0',
   githubToken: '',
   supportURL: '',
+  donationURL: '',
   IOChannels: { production: [''], development: [''] },
   koreanbotsToken: '',
   bot: {

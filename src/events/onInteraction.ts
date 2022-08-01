@@ -483,13 +483,13 @@ export default new Event('interactionCreate', async (client, interaction) => {
     if (customId === 'student-info-stats-select-level') {
       const modal = new ModalBuilder({
         customId: `${id}:student-info-stats-select-level-modal`,
-        title: '학생 레벨 선택',
+        title: '학생 별 수 및 레벨 선택',
         components: [
           new ActionRowBuilder<ModalActionRowComponentBuilder>({
             components: [
               new TextInputBuilder({
                 customId: 'student-info-stats-select-level-modal-stars',
-                label: '학생 레벨 (숫자만 입력하세요)',
+                label: '학생 별 수 (숫자만 입력하세요)',
                 placeholder: '학생 별 수를 입력하세요! (숫자만 입력하세요)',
                 style: TextInputStyle.Short,
                 required: true,

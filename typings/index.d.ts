@@ -26,6 +26,7 @@ export interface IConfig {
   BUILD_NUMBER: string | null;
   githubToken?: string;
   supportURL: string;
+  donationURL: string;
   IOChannels: {
     production: string[];
     development: string[];
