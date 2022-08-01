@@ -23,7 +23,7 @@ class DatabaseManager extends BaseManager_1.default {
         this.logger.debug('Using MongoDB...');
         mongoose_1.default.connect(this.client.config.database.url, this.client.config.database.options);
         this.client.db = mongoose_1.default.connection;
-        this.loadSchemas(schemaPath);
+        // this.loadSchemas(schemaPath);
     }
     loadSchemas(schemaPath) {
         this.logger.debug('Loading schemas...');

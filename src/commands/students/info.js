@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = require("../../structures/Command");
 const Embed_1 = __importDefault(require("../../utils/Embed"));
 const builders_1 = require("@discordjs/builders");
-const Student_1 = require("../../schemas/Student");
 const discord_js_1 = require("discord.js");
+const students_1 = __importDefault(require("../../databases/students"));
+const organizations_1 = __importDefault(require("../../databases/organizations"));
+const clubs_1 = __importDefault(require("../../databases/clubs"));
 exports.default = new Command_1.BaseCommand({
     name: '학생',
     description: '학생 정보를 보여줘요!',
@@ -17,16 +19,12 @@ exports.default = new Command_1.BaseCommand({
     if (!args.length) {
         return message.reply('학생 이름을 입력해주세요!');
     }
-    let student = await Student_1.StudentModel.findOne({
-        $text: { $search: query }
-    })
-        .populate('belong')
-        .populate('club');
-    let organization = student?.belong;
-    let club = student?.club;
+    let student = students_1.default.find((s) => s.name.includes(query));
     if (!student) {
         return message.reply('해당하는 학생이 없어요.');
     }
+    const organization = organizations_1.default.find((o) => o.id === student.belong);
+    const club = clubs_1.default.find((c) => c.id === student.belong);
     let embed = new Embed_1.default(client, 'default')
         .setTitle(`\`${student.name}\`의 기본 정보에요!`)
         .setDescription(`${'⭐️'.repeat(student.stars)} | *${student.type}*`)
@@ -73,7 +71,7 @@ exports.default = new Command_1.BaseCommand({
         value: student.voiceActor ?? '*(없음)*',
         inline: true
     })
-        .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png` ??
+        .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.id}.png` ??
         null);
     message.reply({
         embeds: [embed],
@@ -86,38 +84,38 @@ exports.default = new Command_1.BaseCommand({
                         options: [
                             {
                                 label: '기본 정보',
-                                value: `${student.code}:basic`,
+                                value: `${student.id}:basic`,
                                 description: '학생의 기본적인 정보를 보여줍니다.',
                                 emoji: '📝',
                                 default: true
                             },
                             {
                                 label: '학생 소개',
-                                value: `${student.code}:introduction`,
+                                value: `${student.id}:introduction`,
                                 description: '학생 소개를 보여줍니다.',
                                 emoji: '📒'
                             },
                             {
                                 label: '능력치',
-                                value: `${student.code}:stats`,
+                                value: `${student.id}:stats`,
                                 description: '학생의 능력치를 보여줍니다.',
                                 emoji: '📊'
                             },
                             {
                                 label: '상성 정보',
-                                value: `${student.code}:compatibility`,
+                                value: `${student.id}:compatibility`,
                                 description: '학생의 상성 정보를 보여줍니다.',
                                 emoji: '✨'
                             },
                             {
                                 label: '스킬',
-                                value: `${student.code}:skills`,
+                                value: `${student.id}:skills`,
                                 description: '학생의 스킬을 보여줍니다.',
                                 emoji: '📚'
                             },
                             {
                                 label: '무기 및 장비',
-                                value: `${student.code}:weapons`,
+                                value: `${student.id}:weapons`,
                                 description: '학생의 무기 및 장비를 보여줍니다.',
                                 emoji: '🗡'
                             }
@@ -139,11 +137,7 @@ exports.default = new Command_1.BaseCommand({
     },
     async execute(client, interaction) {
         let query = interaction.options.getString('이름', true);
-        let student = await Student_1.StudentModel.findOne({
-            $text: { $search: query }
-        })
-            .populate('belong')
-            .populate('club');
+        let student = students_1.default.find((s) => s.name.includes(query));
         let organization = student?.belong;
         let club = student?.club;
         if (!student) {
@@ -195,7 +189,7 @@ exports.default = new Command_1.BaseCommand({
             value: student.voiceActor ?? '*(없음)*',
             inline: true
         })
-            .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.code}.png` ??
+            .setThumbnail(`https://cdn.jsdelivr.net/gh/ArpaAP/Aronabot/assets/students/avatars/${student.id}.png` ??
             null);
         interaction.reply({
             embeds: [embed],
@@ -208,38 +202,38 @@ exports.default = new Command_1.BaseCommand({
                             options: [
                                 {
                                     label: '기본 정보',
-                                    value: `${student.code}:basic`,
+                                    value: `${student.id}:basic`,
                                     description: '학생의 기본적인 정보를 보여줍니다.',
                                     emoji: '📝',
                                     default: true
                                 },
                                 {
                                     label: '학생 소개',
-                                    value: `${student.code}:introduction`,
+                                    value: `${student.id}:introduction`,
                                     description: '학생 소개를 보여줍니다.',
                                     emoji: '📒'
                                 },
                                 {
                                     label: '능력치',
-                                    value: `${student.code}:stats`,
+                                    value: `${student.id}:stats`,
                                     description: '학생의 능력치를 보여줍니다.',
                                     emoji: '📊'
                                 },
                                 {
                                     label: '상성 정보',
-                                    value: `${student.code}:compatibility`,
+                                    value: `${student.id}:compatibility`,
                                     description: '학생의 상성 정보를 보여줍니다.',
                                     emoji: '✨'
                                 },
                                 {
                                     label: '스킬',
-                                    value: `${student.code}:skills`,
+                                    value: `${student.id}:skills`,
                                     description: '학생의 스킬을 보여줍니다.',
                                     emoji: '📚'
                                 },
                                 {
                                     label: '무기 및 장비',
-                                    value: `${student.code}:weapons`,
+                                    value: `${student.id}:weapons`,
                                     description: '학생의 무기 및 장비를 보여줍니다.',
                                     emoji: '🗡'
                                 }

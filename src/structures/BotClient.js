@@ -12,6 +12,7 @@ const ErrorManager_1 = __importDefault(require("../managers/ErrorManager"));
 const DatabaseManager_1 = __importDefault(require("../managers/DatabaseManager"));
 const mongoose_1 = require("mongoose");
 const dotenv_1 = require("dotenv");
+const koreanbots_1 = require("koreanbots");
 const logger = new Logger_1.default('bot');
 class BotClient extends discord_js_1.Client {
     VERSION;
@@ -38,10 +39,12 @@ class BotClient extends discord_js_1.Client {
         logger.info('Logging in bot...');
         await this.login(token);
         await this.setStatus();
+        await this.updateKoreanbotsServers();
         setInterval(async () => {
             await this.setStatus();
             this.presenceIndex++;
         }, 12000);
+        setInterval(this.updateKoreanbotsServers, 60000);
     }
     async setStatus(status = 'online', name = '점검중...') {
         if (status.includes('dev')) {
@@ -72,6 +75,20 @@ class BotClient extends discord_js_1.Client {
                 status: 'online'
             });
         }
+    }
+    async updateKoreanbotsServers() {
+        if (!config_1.default.koreanbotsToken)
+            return;
+        const koreanbots = new koreanbots_1.Koreanbots({
+            api: {
+                token: config_1.default.koreanbotsToken
+            },
+            clientID: this.user.id
+        });
+        await koreanbots.mybot.update({
+            servers: this.guilds.cache.size,
+            shards: this.shard?.count
+        });
     }
 }
 exports.default = BotClient;
