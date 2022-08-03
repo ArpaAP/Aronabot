@@ -104,6 +104,9 @@ export default class BotClient extends Client {
         servers: this.guilds.cache.size,
         shards: this.shard?.count
       })
+      .then(() =>
+        logger.info(`Koreanbots servers updated: ${this.guilds.cache.size}`)
+      )
       .catch(logger.error);
   }
 }
