@@ -84,10 +84,12 @@ class BotClient extends discord_js_1.Client {
             },
             clientID: this.user.id
         });
-        await koreanbots.mybot.update({
+        await koreanbots.mybot
+            .update({
             servers: this.guilds.cache.size,
             shards: this.shard?.count
-        });
+        })
+            .catch(logger.error);
     }
 }
 exports.default = BotClient;
