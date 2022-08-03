@@ -5,7 +5,7 @@
     "license": "MIT",
     "main": "src/index.js",
     "scripts": {
-        "start": "cross-env NODE_ENV=production node ./build/index.js",
+        "start": "cross-env NODE_ENV=production node ./build/src/index.js",
         "dev": "ts-node-dev --transpile-only --respawn --trace-warnings --trace-uncaught -- ./src/index.ts",
         "build": "tsc",
         "lint": "eslint . --ext .ts",
