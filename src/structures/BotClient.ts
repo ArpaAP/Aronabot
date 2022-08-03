@@ -99,9 +99,11 @@ export default class BotClient extends Client {
       clientID: this.user!.id
     });
 
-    await koreanbots.mybot.update({
-      servers: this.guilds.cache.size,
-      shards: this.shard?.count
-    });
+    await koreanbots.mybot
+      .update({
+        servers: this.guilds.cache.size,
+        shards: this.shard?.count
+      })
+      .catch(logger.error);
   }
 }
