@@ -89,6 +89,7 @@ class BotClient extends discord_js_1.Client {
             servers: this.guilds.cache.size,
             shards: this.shard?.count
         })
+            .then(() => logger.info(`Koreanbots servers updated: ${this.guilds.cache.size}`))
             .catch(logger.error);
     }
 }
