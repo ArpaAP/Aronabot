@@ -2,17 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 class Embed extends discord_js_1.EmbedBuilder {
-    constructor(client, type) {
+    constructor(client, type, showFooter = true) {
         if (!client.isReady())
             return;
-        const EmbedJSON = {
-            timestamp: new Date().toISOString(),
-            footer: {
-                iconURL: client.user.avatarURL() ?? undefined,
-                text: client.user.username
-            }
-        };
-        super(EmbedJSON);
+        if (showFooter) {
+            const EmbedJSON = {
+                timestamp: new Date().toISOString(),
+                footer: {
+                    iconURL: client.user.avatarURL() ?? undefined,
+                    text: client.user.username
+                }
+            };
+            super(EmbedJSON);
+        }
+        else
+            super();
         if (type === 'success')
             this.setColor('#57F287');
         else if (type === 'error')

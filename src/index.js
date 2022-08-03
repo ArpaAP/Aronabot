@@ -19,10 +19,10 @@ console.log(chalk_1.default.cyanBright(`
 
                   =========================================================`));
 if (!config_1.default.bot.sharding) {
-    require('./bot.ts');
+    require(process.env.NODE_ENV === 'production' ? './bot.js' : './bot.ts');
 }
 else {
-    const manager = new discord_js_1.ShardingManager('./src/bot.ts', config_1.default.bot.shardingOptions);
+    const manager = new discord_js_1.ShardingManager(process.env.NODE_ENV === 'production' ? './bot.js' : './bot.ts', config_1.default.bot.shardingOptions);
     manager.spawn();
     manager.on('shardCreate', async (shard) => {
         logger.info(`Shard #${shard.id} created.`);
