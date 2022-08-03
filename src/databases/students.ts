@@ -40,6 +40,10 @@ const students: Student[] = [
       crowdControlResistance: 100,
       recoveryEffectEnhancement: 1
     },
+    favorStats: {
+      health: [0, 0, 55, 67, 12, 17, 29],
+      attack: [3, 4, 6, 7, 2, 3, 5]
+    },
     compatibility: {
       primaryType: 'DEAL',
       position: 'MIDDLE',
@@ -54,7 +58,7 @@ const students: Student[] = [
     skills: {
       ex: {
         name: '드론 소환: 화력 지원',
-        cost: 2,
+        cost: [2, 2, 2, 2, 2],
         description: '적 1인에게 공격력 ${damageRate} 대미지',
         variables: {
           damageRate: ['400%', '460%', '580%', '640%', '760%']

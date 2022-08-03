@@ -19,10 +19,10 @@ console.log(
 );
 
 if (!config.bot.sharding) {
-  require('./bot.ts');
+  require(process.env.NODE_ENV === 'production' ? './bot.js' : './bot.ts');
 } else {
   const manager = new ShardingManager(
-    './src/bot.ts',
+    process.env.NODE_ENV === 'production' ? './bot.js' : './bot.ts',
     config.bot.shardingOptions
   );
 

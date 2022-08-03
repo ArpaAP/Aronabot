@@ -36,6 +36,7 @@ interface Student {
     crowdControlResistance: number;
     recoveryEffectEnhancement: number;
   };
+  favorStats: { [stat: string]: number[] };
   compatibility: {
     primaryType: 'TANK' | 'DEAL' | 'HEAL' | 'SUPPORT';
     position: 'FRONT' | 'MIDDLE' | 'BACK';
@@ -50,7 +51,7 @@ interface Student {
   skills: {
     ex: {
       name: string;
-      cost: number;
+      cost: number[];
       description: string;
       variables: { [key: string]: string[] };
     };
