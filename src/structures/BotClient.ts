@@ -45,13 +45,16 @@ export default class BotClient extends Client {
     await this.login(token);
 
     await this.setStatus();
-    await this.updateKoreanbotsServers();
 
     setInterval(async () => {
       await this.setStatus();
       this.presenceIndex++;
     }, 12000);
-    setInterval(this.updateKoreanbotsServers, 60000);
+
+    if (process.env.NODE_ENV === 'production') {
+      await this.updateKoreanbotsServers();
+      setInterval(this.updateKoreanbotsServers, 60000);
+    }
   }
 
   public async setStatus(
