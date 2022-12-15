@@ -44,10 +44,10 @@ export default class BotClient extends Client {
     logger.info('Logging in bot...');
     await this.login(token);
 
-    await this.setStatus();
+    this.setStatus();
 
     setInterval(async () => {
-      await this.setStatus();
+      this.setStatus();
       this.presenceIndex++;
     }, 12000);
 
@@ -63,7 +63,7 @@ export default class BotClient extends Client {
   ) {
     if (status.includes('dev')) {
       logger.warn('Changed status to Developent mode');
-      this.user?.setPresence({
+      await this.user?.setPresence({
         activities: [
           { name: `${this.config.bot.prefix}도움 | ${this.VERSION} : ${name}` }
         ],
@@ -82,7 +82,7 @@ export default class BotClient extends Client {
         presence = `${this.config.bot.prefix}도움 | ${this.guilds.cache.size} 서버`;
       }
 
-      this.user?.setPresence({
+      await this.user?.setPresence({
         activities: [{ name: presence }],
         status: 'online'
       });
