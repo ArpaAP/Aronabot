@@ -38,9 +38,9 @@ class BotClient extends discord_js_1.Client {
     async start(token = config_1.default.bot.token) {
         logger.info('Logging in bot...');
         await this.login(token);
-        await this.setStatus();
+        this.setStatus();
         setInterval(async () => {
-            await this.setStatus();
+            this.setStatus();
             this.presenceIndex++;
         }, 12000);
         if (process.env.NODE_ENV === 'production') {
@@ -51,7 +51,7 @@ class BotClient extends discord_js_1.Client {
     async setStatus(status = 'online', name = '점검중...') {
         if (status.includes('dev')) {
             logger.warn('Changed status to Developent mode');
-            this.user?.setPresence({
+            await this.user?.setPresence({
                 activities: [
                     { name: `${this.config.bot.prefix}도움 | ${this.VERSION} : ${name}` }
                 ],
@@ -69,7 +69,7 @@ class BotClient extends discord_js_1.Client {
             if (this.presenceIndex % 3 === 2) {
                 presence = `${this.config.bot.prefix}도움 | ${this.guilds.cache.size} 서버`;
             }
-            this.user?.setPresence({
+            await this.user?.setPresence({
                 activities: [{ name: presence }],
                 status: 'online'
             });
